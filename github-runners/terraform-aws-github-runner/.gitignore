@@ -1,0 +1,28 @@
+# state
+*.tfstate*
+
+# Module directory
+.terraform/
+
+# keys
+*id_rsa*
+
+# other
+node_modules/
+.idea
+.DS_Store
+*.out
+secrets.auto.tfvars
+.envrc
+*.zip
+*.gz
+*.tgz
+*.env*
+*.tfvars
+
+node_modules/
+.ci
+.github
+modules/
+*.md
+resources/
