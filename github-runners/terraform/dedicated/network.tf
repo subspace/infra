@@ -12,28 +12,12 @@ resource "aws_subnet" "public_subnets" {
   count                   = length(var.public_subnet_cidrs)
   vpc_id                  = aws_vpc.gh-runners.id
   cidr_block              = element(var.public_subnet_cidrs, count.index)
-  availability_zone       = element(var.azs, count.index)
+  availability_zone       = var.azs
   map_public_ip_on_launch = "true"
 
   tags = {
-    Name = "Public Subnet ${count.index + 1}"
+    Name = "gh-runner-public-subnet-${count.index + 1}"
   }
-}
-
-resource "aws_subnet" "private_subnets" {
-  count             = length(var.private_subnet_cidrs)
-  vpc_id            = aws_vpc.gh-runners.id
-  cidr_block        = element(var.private_subnet_cidrs, count.index)
-  availability_zone = element(var.azs, count.index)
-
-  tags = {
-    Name = "Private Subnet ${count.index + 1}"
-  }
-
-  lifecycle {
-    prevent_destroy = false
-  }
-
 }
 
 
@@ -42,7 +26,7 @@ resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.gh-runners.id
 
   tags = {
-    Name = "igw-public-subnet-${count.index}"
+    Name = "gh-runner-igw-public-subnet-${count.index}"
   }
 
   lifecycle {
@@ -65,7 +49,7 @@ resource "aws_route_table" "public_route_table" {
   }
 
   tags = {
-    Name = "public-route-tbl-${count.index}"
+    Name = "gh-runner-public-route-tbl-${count.index}"
   }
 
   depends_on = [
@@ -79,27 +63,6 @@ resource "aws_route_table_association" "public_route_table_subnets_association" 
   route_table_id = element(aws_route_table.public_route_table.*.id, count.index)
 }
 
-
-resource "aws_route_table" "private_route_table" {
-  count  = length(var.private_subnet_cidrs)
-  vpc_id = aws_vpc.gh-runners.id
-
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.nat_gateway[count.index].id
-  }
-
-  tags = {
-    Name = "private-route-tbl-${count.index}"
-  }
-}
-
-resource "aws_route_table_association" "private_route_table_subnets_association" {
-  count          = length(var.private_subnet_cidrs)
-  subnet_id      = element(aws_subnet.private_subnets.*.id, count.index)
-  route_table_id = element(aws_route_table.private_route_table.*.id, count.index)
-}
-
 resource "aws_security_group" "allow_runner" {
   name        = "allow_runner"
   description = "Allow HTTP and HTTPS inbound traffic"
@@ -110,7 +73,7 @@ resource "aws_security_group" "allow_runner" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = [aws_vpc.gh-runners.cidr_block]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
@@ -118,7 +81,7 @@ resource "aws_security_group" "allow_runner" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = [aws_vpc.gh-runners.cidr_block]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
@@ -160,26 +123,4 @@ resource "aws_security_group" "allow_runner" {
   depends_on = [
     aws_vpc.gh-runners
   ]
-}
-
-## Allocate EIP to NAT Gateway
-
-resource "aws_eip" "public_subnet_eip" {
-  count = length(var.public_subnet_cidrs)
-  vpc   = true
-
-  depends_on = [
-    aws_internet_gateway.gw,
-  ]
-}
-
-# NAT Gateway for public subnet
-resource "aws_nat_gateway" "nat_gateway" {
-  count         = length(var.public_subnet_cidrs)
-  allocation_id = element(aws_eip.public_subnet_eip.*.allocation_id, count.index)
-  subnet_id     = element(aws_subnet.public_subnets.*.id, count.index)
-
-  tags = {
-    Name = "public-subnet-nat-GTW-${count.index}"
-  }
 }

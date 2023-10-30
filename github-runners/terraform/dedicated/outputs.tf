@@ -4,10 +4,6 @@ output "ingress_rules" {
   value = aws_security_group.allow_runner.*.ingress
 }
 
-output "public_subnet_eip" {
-  value = aws_eip.public_subnet_eip.*.public_ip
-}
-
 output "linux_x86_64_runner_server_id" {
   value = aws_instance.linux_x86_64_runner.*.id
 }

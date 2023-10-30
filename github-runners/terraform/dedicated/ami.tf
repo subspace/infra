@@ -90,7 +90,7 @@ data "aws_ami" "windows_x86_64" {
 
   filter {
     name   = "name"
-    values = ["Windows_Server-2022-English-Full-Base-2023.04.12"]
+    values = ["Windows_Server-2022-English-Full-Base-2023.07.12"]
   }
 
   filter {
