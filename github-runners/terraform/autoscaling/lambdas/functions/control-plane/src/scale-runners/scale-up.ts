@@ -4,8 +4,8 @@ import { getParameter, putParameter } from '@terraform-aws-github-runner/aws-ssm
 import yn from 'yn';
 
 import { createGithubAppAuth, createGithubInstallationAuth, createOctoClient } from '../gh-auth/gh-auth';
-import { createRunner, listEC2Runners } from './../aws/runners';
-import { RunnerInputParameters } from './../aws/runners.d';
+import { createRunner, listEC2Runners } from '../aws/runners';
+import { RunnerInputParameters } from '../aws/runners';
 import ScaleError from './ScaleError';
 
 const logger = createChildLogger('scale-up');

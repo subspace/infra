@@ -11,8 +11,8 @@ import { createChildLogger } from '@terraform-aws-github-runner/aws-powertools-u
 import { getParameter } from '@terraform-aws-github-runner/aws-ssm-util';
 import moment from 'moment';
 
-import ScaleError from './../scale-runners/ScaleError';
-import * as Runners from './runners.d';
+import ScaleError from '../scale-runners/ScaleError';
+import * as Runners from './runners';
 
 const logger = createChildLogger('runners');
 

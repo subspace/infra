@@ -3,8 +3,8 @@ import { createChildLogger } from '@terraform-aws-github-runner/aws-powertools-u
 import moment from 'moment';
 
 import { createGithubAppAuth, createGithubInstallationAuth, createOctoClient } from '../gh-auth/gh-auth';
-import { bootTimeExceeded, listEC2Runners, terminateRunner } from './../aws/runners';
-import { RunnerInfo, RunnerList } from './../aws/runners.d';
+import { bootTimeExceeded, listEC2Runners, terminateRunner } from '../aws/runners';
+import { RunnerInfo, RunnerList } from '../aws/runners';
 import { GhRunners, githubCache } from './cache';
 import { ScalingDownConfig, getEvictionStrategy, getIdleRunnerCount } from './scale-down-config';
 
