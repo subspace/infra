@@ -23,6 +23,5 @@ secrets.auto.tfvars
 node_modules/
 .ci
 .github
-modules/
 *.md
 resources/

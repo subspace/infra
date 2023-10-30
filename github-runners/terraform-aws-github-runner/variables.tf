@@ -9,7 +9,7 @@ variable "vpc_id" {
 }
 
 variable "subnet_ids" {
-  description = "List of subnets in which the action runner instances will be launched. The subnets need to exist in the configured VPC (`vpc_id`), and must reside in different availability zones (see https://github.com/philips-labs/terraform-aws-github-runner/issues/2904)"
+  description = "List of subnets in which the action runner instances will be launched. The subnets need to exist in the configured VPC (`vpc_id`), and must reside in different availability zones."
   type        = list(string)
 }
 
@@ -17,17 +17,6 @@ variable "tags" {
   description = "Map of tags that will be added to created resources. By default resources will be tagged with name and environment."
   type        = map(string)
   default     = {}
-}
-
-variable "environment" {
-  description = "DEPRECATED, no longer used. See `prefix`"
-  type        = string
-  default     = null
-
-  validation {
-    condition     = var.environment == null
-    error_message = "The \"environment\" variable is no longer used. To migrate, set the \"prefix\" variable to the original value of \"environment\" and optionally, add \"Environment\" to the \"tags\" variable map with the same value."
-  }
 }
 
 variable "prefix" {
@@ -39,7 +28,7 @@ variable "prefix" {
 variable "enable_organization_runners" {
   description = "Register runners to organization, instead of repo level"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "github_app" {
@@ -70,7 +59,7 @@ variable "runner_boot_time_in_minutes" {
 }
 
 variable "runner_extra_labels" {
-  description = "Extra (custom) labels for the runners (GitHub). Separate each label by a comma. Labels checks on the webhook can be enforced by setting `enable_workflow_job_labels_check`. GitHub read-only labels should not be provided."
+  description = "Extra (custom) labels for the runners (GitHub). Separate each label by a comma. Labels checks on the webhook can be enforced by setting `enable_workflow_job_labels_check`."
   type        = string
   default     = ""
 }
@@ -227,7 +216,7 @@ variable "enable_userdata" {
 }
 
 variable "userdata_template" {
-  description = "Alternative user-data template, replacing the default template. By providing your own user_data you have to take care of installing all required software, including the action runner. Variables userdata_pre/post_install are ignored."
+  description = "Alternative user-data template, replacing the default template. By providing your own user_data you have to take care of installing all required software, including the action runner."
   type        = string
   default     = null
 }
