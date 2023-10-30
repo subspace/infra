@@ -1,3 +1,4 @@
+
 variable "aws_region" {
   description = "AWS region."
   type        = string
@@ -11,6 +12,28 @@ variable "vpc_id" {
 variable "subnet_ids" {
   description = "List of subnets in which the action runner instances will be launched. The subnets need to exist in the configured VPC (`vpc_id`), and must reside in different availability zones."
   type        = list(string)
+}
+
+variable "secret_key" {
+  type      = string
+  sensitive = true
+}
+
+variable "ssh_user" {
+  type    = list(string)
+  default = ["ubuntu", "ec2-user"]
+
+}
+
+variable "access_key" {
+  type      = string
+  sensitive = true
+}
+
+variable "aws_key_name" {
+  default   = "deployer"
+  type      = string
+  sensitive = true
 }
 
 variable "tags" {
@@ -513,16 +536,6 @@ variable "runner_egress_rules" {
     to_port          = 0
     description      = null
   }]
-}
-
-variable "log_type" {
-  description = "Logging format for lambda logging. Valid values are 'json', 'pretty', 'hidden'. "
-  type        = string
-  default     = null
-  validation {
-    condition     = var.log_type == null
-    error_message = "DEPRECATED: `log_type` is not longer supported."
-  }
 }
 
 variable "log_level" {
