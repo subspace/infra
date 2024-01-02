@@ -1,6 +1,6 @@
 import { Context } from 'aws-lambda';
 
-import { logger, setContext } from '..';
+import { logger, setContext } from '../';
 
 beforeEach(() => {
   jest.clearAllMocks();

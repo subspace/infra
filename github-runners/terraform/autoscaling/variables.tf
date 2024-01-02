@@ -84,13 +84,13 @@ variable "runner_boot_time_in_minutes" {
 variable "runner_extra_labels" {
   description = "Extra (custom) labels for the runners (GitHub). Separate each label by a comma. Labels checks on the webhook can be enforced by setting `enable_workflow_job_labels_check`."
   type        = string
-  default     = ""
+  default     = "x86-64"
 }
 
 variable "runner_group_name" {
   description = "Name of the runner group."
   type        = string
-  default     = "Default"
+  default     = "Subspace"
 }
 
 variable "scale_up_reserved_concurrent_executions" {

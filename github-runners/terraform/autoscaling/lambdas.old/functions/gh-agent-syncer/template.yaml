@@ -1,0 +1,16 @@
+# AWS SAM template for testing Lambda locally, we use Terraform as deployment framework
+Resources:
+  Syncer:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: nodejs18.x
+      Handler: dist/index.handler
+      MemorySize: 256
+      Timeout: 300
+      Environment:
+        Variables:
+          GITHUB_RUNNER_ARCHITECTURE:
+          GITHUB_RUNNER_OS:
+          LOG_LEVEL:
+          S3_BUCKET_NAME:
+          S3_OBJECT_KEY:
