@@ -44,7 +44,10 @@ The example will try to update the webhook of your GitHub. In case the update fa
 
 ```bash
 terraform output -raw webhook_secret
+terraform output webhook_endpoint
 ```
+
+Add the secret and endpoint to the github app and save it.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements

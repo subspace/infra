@@ -10,6 +10,10 @@ resource "random_id" "random" {
   byte_length = 20
 }
 
+resource "aws_iam_service_linked_role" "spot" {
+  aws_service_name = "spot.amazonaws.com"
+}
+
 module "base" {
   source = "../base"
 

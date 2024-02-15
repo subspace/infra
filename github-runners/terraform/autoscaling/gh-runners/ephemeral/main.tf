@@ -1,10 +1,14 @@
 locals {
   environment = var.environment != null ? var.environment : "ephemeral"
-  aws_region  = "eu-west-1"
+  aws_region  = "us-west-2"
 }
 
 resource "random_id" "random" {
   byte_length = 20
+}
+
+resource "aws_iam_service_linked_role" "spot" {
+  aws_service_name = "spot.amazonaws.com"
 }
 
 module "base" {
