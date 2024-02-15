@@ -9,7 +9,7 @@ variable "vpc_id" {
 }
 
 variable "subnet_ids" {
-  description = "List of subnets in which the action runner instances will be launched. The subnets need to exist in the configured VPC (`vpc_id`), and must reside in different availability zones (see https://github.com/philips-labs/terraform-aws-github-runner/issues/2904)"
+  description = "List of subnets in which the action runner instances will be launched. The subnets need to exist in the configured VPC (`vpc_id`) in different AZs."
   type        = list(string)
 }
 
@@ -466,7 +466,7 @@ variable "instance_max_spot_price" {
 variable "instance_types" {
   description = "List of instance types for the action runner. Defaults are based on runner_os (al2023 for linux and Windows Server Core for win)."
   type        = list(string)
-  default     = ["m5.large", "c5.large"]
+  default     = ["m6a.4xlarge", "c6a.4xlarge"]
 }
 
 variable "repository_white_list" {

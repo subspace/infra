@@ -1,6 +1,6 @@
 locals {
   environment = var.environment != null ? var.environment : "ephemeral"
-  aws_region  = "us-west-2"
+  aws_region  = "eu-west-1"
 }
 
 resource "random_id" "random" {
@@ -23,7 +23,7 @@ module "runners" {
 
   prefix = local.environment
   tags = {
-    Project = "ProjectX"
+    Project = "subspace-ephemeral-runners"
   }
 
   github_app = {
@@ -43,10 +43,7 @@ module "runners" {
   # enable access to the runners via SSM
   enable_ssm_on_runners = true
 
-  # Let the module manage the service linked role
-  # create_service_linked_role_spot = true
-
-  instance_types = ["m5.large", "c5.large"]
+  instance_types = ["m6a.4xlarge", "c6a.4xlarge"]
 
   # override delay of events in seconds
   delay_webhook_event = 0

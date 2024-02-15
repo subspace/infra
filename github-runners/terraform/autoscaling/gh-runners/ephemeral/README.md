@@ -17,7 +17,7 @@ cd ..
 Before running Terraform, ensure the GitHub app is configured. See the [configuration details](https://philips-labs.github.io/terraform-aws-github-runner/configuration/#ephemeral-runners) for more details.
 
 ```bash
-terraform init
+terraform init -upgrade
 terraform apply
 ```
 

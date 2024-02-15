@@ -4,6 +4,6 @@ variable "prefix" {
 }
 
 variable "aws_region" {
-  description = "AWS region to create the VPC, assuming zones `a` and `b` exists."
+  description = "AWS region to create the VPC."
   type        = string
 }
