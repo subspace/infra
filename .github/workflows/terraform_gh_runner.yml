@@ -13,6 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    defaults:
+      run:
+        working-directory: ./github-runners/terraform/autoscaling/gh-runners/base
 
     steps:
       - name: Checkout repository
@@ -28,35 +31,13 @@ jobs:
         run: |
           bash scripts/transcrypt -c aes-256-cbc -p ${{ secrets.TRANSCRYPT }} -y
 
-      - name: Run Bash Script
-        id: generate_runner_token
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Terraform init
+        run: terraform init -upgrade
+
+      - name: Validate terraform
+        run: terraform validate
+
+      - name: Terraform plan and apply
         run: |
-          # GitHub repository and access token for github api calls, since GITHUB_TOKEN can't
-          # be used for this purpose.
-          repo="subspace/infra"
-          token=${{ secrets.PAT_TOKEN }}
-
-          # API endpoint
-          url="https://api.github.com/repos/$repo/actions/runners/registration-token"
-
-          # Send POST request to get the registration token
-          response=$(curl -X POST -H "Authorization: token $token" -s "$url")
-
-          # Extract the token value from the response
-          runner_token=$(echo "$response" | jq -r '.token')
-
-          # Mask the runner token in the logs
-          echo "::add-mask::$runner_token"
-
-          # Pass the runner token in GitHub Actions for use
-          # in subsequent steps with terraform for runner registration
-          echo "::set-output name=runner_token::$runner_token"
-
-      - name: Run Terraform
-        working-directory: ./github-runners/terraform/autoscaling
-        run: |
-          terraform init
           terraform plan -var-file=terraform.tfvars
-          terraform apply -auto-approve -var "gh_token=${{ steps.generate_runner_token.outputs.runner_token }}" -var-file=terraform.tfvars
+          terraform apply -auto-approve -var-file=terraform.tfvars
