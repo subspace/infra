@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    kubernetes.io/hostname: bootstrap-archival-node
+    kubernetes.io/service-name: bootstrap-archival-node
+    app: bootstrap-archival-node
+    component: devnet
+  name: bootstrap-archival-node
+  namespace: devnet
+spec:
+  clusterIP: None
+  ports:
+    - name: "30333"
+      port: 30333
+      protocol: UDP
+      targetPort: 30333
+    - name: 30333-tcp
+      port: 30333
+      targetPort: 30333
+    - name: "30433"
+      port: 30433
+      protocol: UDP
+      targetPort: 30433
+    - name: 30433-tcp
+      port: 30433
+      targetPort: 30433
+    - name: "30334"
+      port: 30334
+      targetPort: 30334
+    - name: "9615"
+      port: 9615
+      targetPort: 9615
+  selector:
+    kubernetes.io/hostname: bootstrap-archival-node
+    kubernetes.io/service-name: bootstrap-archival-node
+  type: ClusterIP
