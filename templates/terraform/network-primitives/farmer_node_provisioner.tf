@@ -1,10 +1,10 @@
 locals {
   farmer_nodes_ipv4 = flatten([
-    [aws_instance.farmer_node.*.public_ip]
+    [module.farmer_node.*.public_ip]
     ]
   )
   farmer_nodes_ipv6 = flatten([
-    [aws_instance.farmer_node.*.ipv6_addresses]
+    [module.farmer_node.*.ipv6_addresses]
     ]
   )
 }
@@ -12,7 +12,7 @@ locals {
 resource "null_resource" "setup-farmer-nodes" {
   count = length(local.farmer_nodes_ipv4)
 
-  depends_on = [aws_instance.farmer_node]
+  depends_on = [module.farmer_node]
 
   # trigger on node ip changes
   triggers = {
@@ -59,11 +59,11 @@ resource "null_resource" "setup-farmer-nodes" {
 }
 
 resource "null_resource" "prune-farmer-nodes" {
-  count      = var.farmer-node-config.prune ? length(local.farmer_nodes_ipv4) : 0
+  count      = module.farmer-node-config.prune ? length(local.farmer_nodes_ipv4) : 0
   depends_on = [null_resource.setup-farmer-nodes]
 
   triggers = {
-    prune = var.farmer-node-config.prune
+    prune = module.farmer-node-config.prune
   }
 
   connection {
@@ -95,8 +95,8 @@ resource "null_resource" "start-farmer-nodes" {
 
   # trigger on node deployment version change
   triggers = {
-    deployment_version = var.farmer-node-config.deployment-version
-    reserved_only      = var.farmer-node-config.reserved-only
+    deployment_version = module.farmer-node-config.deployment-version
+    reserved_only      = module.farmer-node-config.reserved-only
   }
 
   connection {
@@ -151,20 +151,20 @@ resource "null_resource" "start-farmer-nodes" {
       "sudo hostnamectl set-hostname ${var.network_name}-farmer-node-${count.index}",
 
       # create .env file
-      "echo NODE_ORG=${var.farmer-node-config.docker-org} > /home/${var.ssh_user}/subspace/.env",
-      "echo NODE_TAG=${var.farmer-node-config.docker-tag} >> /home/${var.ssh_user}/subspace/.env",
+      "echo NODE_ORG=${module.farmer-node-config.docker-org} > /home/${var.ssh_user}/subspace/.env",
+      "echo NODE_TAG=${module.farmer-node-config.docker-tag} >> /home/${var.ssh_user}/subspace/.env",
       "echo NETWORK_NAME=${var.network_name} >> /home/${var.ssh_user}/subspace/.env",
       "echo NODE_ID=${count.index} >> /home/${var.ssh_user}/subspace/.env",
       "echo NODE_KEY=$(sed -nr 's/NODE_${count.index}_KEY=//p' /home/${var.ssh_user}/subspace/node_keys.txt) >> /home/${var.ssh_user}/subspace/.env",
       "echo NR_API_KEY=${var.nr_api_key} >> /home/${var.ssh_user}/subspace/.env",
-      "echo REWARD_ADDRESS=${var.farmer-node-config.reward-address} >> /home/${var.ssh_user}/subspace/.env",
-      "echo PLOT_SIZE=${var.farmer-node-config.plot-size} >> /home/${var.ssh_user}/subspace/.env",
+      "echo REWARD_ADDRESS=${module.farmer-node-config.reward-address} >> /home/${var.ssh_user}/subspace/.env",
+      "echo PLOT_SIZE=${module.farmer-node-config.plot-size} >> /home/${var.ssh_user}/subspace/.env",
       "echo PIECE_CACHE_SIZE=${var.piece_cache_size} >> /home/${var.ssh_user}/subspace/.env",
-      "echo NODE_DSN_PORT=${var.farmer-node-config.node-dsn-port} >> /home/${var.ssh_user}/subspace/.env",
+      "echo NODE_DSN_PORT=${module.farmer-node-config.node-dsn-port} >> /home/${var.ssh_user}/subspace/.env",
       "echo POT_EXTERNAL_ENTROPY=${var.pot_external_entropy} >> /home/${var.ssh_user}/subspace/.env",
 
       # create docker compose file
-      "bash /home/${var.ssh_user}/subspace/create_compose_file.sh ${var.bootstrap-node-config.reserved-only} ${length(local.farmer_nodes_ipv4)} ${count.index} ${length(local.bootstrap_nodes_ip_v4)} ${var.farmer-node-config.force-block-production}",
+      "bash /home/${var.ssh_user}/subspace/create_compose_file.sh ${var.bootstrap-node-config.reserved-only} ${length(local.farmer_nodes_ipv4)} ${count.index} ${length(local.bootstrap_nodes_ip_v4)} ${module.farmer-node-config.force-block-production}",
 
       # start subspace
       "sudo docker compose -f /home/${var.ssh_user}/subspace/docker-compose.yml up -d",

@@ -10,6 +10,24 @@ variable "create" {
     default     = ""
   }
 
+  variable ssh_key_name {
+    description = "The name of the SSH key pair to use"
+    type        = string
+    default     = null
+  }
+
+  variable private_key_path {
+    description = "The path to the SSH public key to use"
+    type        = string
+    default     = null
+  }
+
+  variable ssh_user {
+    description = "The SSH user to use"
+    type        = string
+    default     = "ec2-user"
+  }
+
   variable "ami_ssm_parameter" {
     description = "SSM parameter name for the AMI ID. For Amazon Linux AMI SSM parameters see [reference](https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-public-parameters-ami.html)"
     type        = string

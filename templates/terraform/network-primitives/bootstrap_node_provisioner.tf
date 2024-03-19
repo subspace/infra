@@ -1,11 +1,11 @@
 locals {
   bootstrap_nodes_ip_v4 = flatten([
-    [aws_instance.bootstrap_node.*.public_ip]
+    [module.bootstrap_node.*.public_ip]
     ]
   )
 
   bootstrap_nodes_ip_v6 = flatten([
-    [aws_instance.bootstrap_node.*.ipv6_addresses]
+    [module.bootstrap_node.*.ipv6_addresses]
     ]
   )
 }
@@ -13,7 +13,7 @@ locals {
 resource "null_resource" "setup-bootstrap-nodes" {
   count = length(local.bootstrap_nodes_ip_v4)
 
-  depends_on = [aws_instance.bootstrap_node]
+  depends_on = [module.bootstrap_node]
 
   # trigger on node ip changes
   triggers = {
@@ -59,11 +59,11 @@ resource "null_resource" "setup-bootstrap-nodes" {
 }
 
 resource "null_resource" "prune-bootstrap-nodes" {
-  count      = var.bootstrap-node-config.prune ? length(local.bootstrap_nodes_ip_v4) : 0
+  count      = module.bootstrap-node-config.prune ? length(local.bootstrap_nodes_ip_v4) : 0
   depends_on = [null_resource.setup-bootstrap-nodes]
 
   triggers = {
-    prune = var.bootstrap-node-config.prune
+    prune = module.bootstrap-node-config.prune
   }
 
   connection {
@@ -95,8 +95,8 @@ resource "null_resource" "start-boostrap-nodes" {
 
   # trigger on node deployment version change
   triggers = {
-    deployment_version = var.bootstrap-node-config.deployment-version
-    reserved_only      = var.bootstrap-node-config.reserved-only
+    deployment_version = module.bootstrap-node-config.deployment-version
+    reserved_only      = module.bootstrap-node-config.reserved-only
   }
 
   connection {
@@ -136,8 +136,8 @@ resource "null_resource" "start-boostrap-nodes" {
       "sudo hostnamectl set-hostname ${var.network_name}-bootstrap-node-${count.index}",
 
       # create .env file
-      "echo NODE_ORG=${var.bootstrap-node-config.docker-org} > /home/${var.ssh_user}/subspace/.env",
-      "echo NODE_TAG=${var.bootstrap-node-config.docker-tag} >> /home/${var.ssh_user}/subspace/.env",
+      "echo NODE_ORG=${module.bootstrap-node-config.docker-org} > /home/${var.ssh_user}/subspace/.env",
+      "echo NODE_TAG=${module.bootstrap-node-config.docker-tag} >> /home/${var.ssh_user}/subspace/.env",
       "echo NETWORK_NAME=${var.network_name} >> /home/${var.ssh_user}/subspace/.env",
       "echo NODE_ID=${count.index} >> /home/${var.ssh_user}/subspace/.env",
       "echo NODE_KEY=$(sed -nr 's/NODE_${count.index}_KEY=//p' /home/${var.ssh_user}/subspace/node_keys.txt) >> /home/${var.ssh_user}/subspace/.env",
@@ -145,13 +145,13 @@ resource "null_resource" "start-boostrap-nodes" {
       "echo PIECE_CACHE_SIZE=${var.piece_cache_size} >> /home/${var.ssh_user}/subspace/.env",
       "echo DSN_NODE_ID=${count.index} >> /home/${var.ssh_user}/subspace/.env",
       "echo DSN_NODE_KEY=$(sed -nr 's/NODE_${count.index}_SUBSPACE_KEY=//p' /home/${var.ssh_user}/subspace/dsn_bootstrap_node_keys.txt) >> /home/${var.ssh_user}/subspace/.env",
-      "echo DSN_LISTEN_PORT=${var.bootstrap-node-config.dsn-listen-port} >> /home/${var.ssh_user}/subspace/.env",
-      "echo NODE_DSN_PORT=${var.bootstrap-node-config.node-dsn-port} >> /home/${var.ssh_user}/subspace/.env",
-      "echo GENESIS_HASH=${var.bootstrap-node-config.genesis-hash} >> /home/${var.ssh_user}/subspace/.env",
+      "echo DSN_LISTEN_PORT=${module.bootstrap-node-config.dsn-listen-port} >> /home/${var.ssh_user}/subspace/.env",
+      "echo NODE_DSN_PORT=${module.bootstrap-node-config.node-dsn-port} >> /home/${var.ssh_user}/subspace/.env",
+      "echo GENESIS_HASH=${module.bootstrap-node-config.genesis-hash} >> /home/${var.ssh_user}/subspace/.env",
       "echo POT_EXTERNAL_ENTROPY=${var.pot_external_entropy} >> /home/${var.ssh_user}/subspace/.env",
 
       # create docker compose file
-      "bash /home/${var.ssh_user}/subspace/create_compose_file.sh ${var.bootstrap-node-config.reserved-only} ${length(local.bootstrap_nodes_ip_v4)} ${count.index}",
+      "bash /home/${var.ssh_user}/subspace/create_compose_file.sh ${module.bootstrap-node-config.reserved-only} ${length(local.bootstrap_nodes_ip_v4)} ${count.index}",
 
       # start subspace node
       "sudo docker compose -f /home/${var.ssh_user}/subspace/docker-compose.yml up -d",

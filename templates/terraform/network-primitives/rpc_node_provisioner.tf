@@ -1,10 +1,10 @@
 locals {
   rpc_nodes_ip_v4 = flatten([
-    [aws_instance.rpc_node.*.public_ip]
+    [module.rpc_node.*.public_ip]
     ]
   )
   rpc_nodes_ip_v6 = flatten([
-    [aws_instance.rpc_node.*.ipv6_addresses]
+    [module.rpc_node.*.ipv6_addresses]
     ]
   )
 }
@@ -12,7 +12,7 @@ locals {
 resource "null_resource" "setup-rpc-nodes" {
   count = length(local.rpc_nodes_ip_v4)
 
-  depends_on = [aws_instance.rpc_node]
+  depends_on = [module.rpc_node]
 
   # trigger on node ip changes
   triggers = {
@@ -64,11 +64,11 @@ resource "null_resource" "setup-rpc-nodes" {
 }
 
 resource "null_resource" "prune-rpc-nodes" {
-  count      = var.rpc-node-config.prune ? length(local.rpc_nodes_ip_v4) : 0
+  count      = module.rpc-node-config.prune ? length(local.rpc_nodes_ip_v4) : 0
   depends_on = [null_resource.setup-rpc-nodes]
 
   triggers = {
-    prune = var.rpc-node-config.prune
+    prune = module.rpc-node-config.prune
   }
 
   connection {
@@ -100,8 +100,8 @@ resource "null_resource" "start-rpc-nodes" {
 
   # trigger on node deployment version change
   triggers = {
-    deployment_version = var.rpc-node-config.deployment-version
-    reserved_only      = var.rpc-node-config.reserved-only
+    deployment_version = module.rpc-node-config.deployment-version
+    reserved_only      = module.rpc-node-config.reserved-only
   }
 
   connection {
@@ -159,15 +159,15 @@ resource "null_resource" "start-rpc-nodes" {
       "sudo hostnamectl set-hostname ${var.network_name}-rpc-node-${count.index}",
 
       # create .env file
-      "echo NODE_ORG=${var.rpc-node-config.docker-org} > /home/${var.ssh_user}/subspace/.env",
-      "echo NODE_TAG=${var.rpc-node-config.docker-tag} >> /home/${var.ssh_user}/subspace/.env",
+      "echo NODE_ORG=${module.rpc-node-config.docker-org} > /home/${var.ssh_user}/subspace/.env",
+      "echo NODE_TAG=${module.rpc-node-config.docker-tag} >> /home/${var.ssh_user}/subspace/.env",
       "echo NETWORK_NAME=${var.network_name} >> /home/${var.ssh_user}/subspace/.env",
-      "echo DOMAIN_PREFIX=${var.rpc-node-config.domain-prefix} >> /home/${var.ssh_user}/subspace/.env",
+      "echo DOMAIN_PREFIX=${module.rpc-node-config.domain-prefix} >> /home/${var.ssh_user}/subspace/.env",
       "echo NODE_ID=${count.index} >> /home/${var.ssh_user}/subspace/.env",
       "echo NODE_KEY=$(sed -nr 's/NODE_${count.index}_KEY=//p' /home/${var.ssh_user}/subspace/node_keys.txt) >> /home/${var.ssh_user}/subspace/.env",
       "echo NR_API_KEY=${var.nr_api_key} >> /home/${var.ssh_user}/subspace/.env",
       "echo PIECE_CACHE_SIZE=${var.piece_cache_size} >> /home/${var.ssh_user}/subspace/.env",
-      "echo NODE_DSN_PORT=${var.rpc-node-config.node-dsn-port} >> /home/${var.ssh_user}/subspace/.env",
+      "echo NODE_DSN_PORT=${module.rpc-node-config.node-dsn-port} >> /home/${var.ssh_user}/subspace/.env",
       "echo POT_EXTERNAL_ENTROPY=${var.pot_external_entropy} >> /home/${var.ssh_user}/subspace/.env",
 
       # create docker compose file

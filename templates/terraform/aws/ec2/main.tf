@@ -193,6 +193,26 @@ resource "aws_instance" "this" {
     ignore_changes = [ami, ipv6_address_count]
 
   }
+
+  provisioner "remote-exec" {
+    inline = [
+      "cloud-init status --wait",
+      "sudo apt update -y",
+    ]
+
+    on_failure = continue
+
+  }
+
+  # Setting up the ssh connection
+  connection {
+    type        = "ssh"
+    host        = element(self.*.public_ip, count.index)
+    user        = var.ssh_user
+    private_key = file("${var.private_key_path}")
+    timeout     = "300s"
+  }
+
 }
 
 
@@ -359,6 +379,31 @@ resource "aws_spot_instance_request" "this" {
 
   tags        = merge({ "Name" = var.name }, var.instance_tags, var.tags)
   volume_tags = var.enable_volume_tags ? merge({ "Name" = var.name }, var.volume_tags) : null
+
+  lifecycle {
+
+    ignore_changes = [ami, ipv6_address_count]
+
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "cloud-init status --wait",
+      "sudo apt update -y",
+    ]
+
+    on_failure = continue
+
+  }
+
+  # Setting up the ssh connection
+  connection {
+    type        = "ssh"
+    host        = element(self.*.public_ip, count.index)
+    user        = var.ssh_user
+    private_key = file("${var.private_key_path}")
+    timeout     = "300s"
+  }
 }
 
 ######################################

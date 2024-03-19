@@ -1,10 +1,10 @@
 locals {
   domain_nodes_ip_v4 = flatten([
-    [aws_instance.domain_node.*.public_ip]
+    [module.domain_node.*.public_ip]
     ]
   )
   domain_nodes_ip_v6 = flatten([
-    [aws_instance.domain_node.*.ipv6_addresses]
+    [module.domain_node.*.ipv6_addresses]
     ]
   )
 }
@@ -12,7 +12,7 @@ locals {
 resource "null_resource" "setup-domain-nodes" {
   count = length(local.domain_nodes_ip_v4)
 
-  depends_on = [aws_instance.domain_node]
+  depends_on = [module.domain_node]
 
   # trigger on node ip changes
   triggers = {
@@ -65,11 +65,11 @@ resource "null_resource" "setup-domain-nodes" {
 }
 
 resource "null_resource" "prune-domain-nodes" {
-  count      = var.domain-node-config.prune ? length(local.domain_nodes_ip_v4) : 0
+  count      = module.domain-node-config.prune ? length(local.domain_nodes_ip_v4) : 0
   depends_on = [null_resource.setup-domain-nodes]
 
   triggers = {
-    prune = var.domain-node-config.prune
+    prune = module.domain-node-config.prune
   }
 
   connection {
@@ -101,8 +101,8 @@ resource "null_resource" "start-domain-nodes" {
 
   # trigger on node deployment version change
   triggers = {
-    deployment_version = var.domain-node-config.deployment-version
-    reserved_only      = var.domain-node-config.reserved-only
+    deployment_version = module.domain-node-config.deployment-version
+    reserved_only      = module.domain-node-config.reserved-only
   }
 
   connection {
@@ -167,24 +167,24 @@ resource "null_resource" "start-domain-nodes" {
       "sudo hostnamectl set-hostname ${var.network_name}-domain-node-${count.index}",
 
       # create .env file
-      "echo NODE_ORG=${var.domain-node-config.docker-org} > /home/${var.ssh_user}/subspace/.env",
-      "echo NODE_TAG=${var.domain-node-config.docker-tag} >> /home/${var.ssh_user}/subspace/.env",
+      "echo NODE_ORG=${module.domain-node-config.docker-org} > /home/${var.ssh_user}/subspace/.env",
+      "echo NODE_TAG=${module.domain-node-config.docker-tag} >> /home/${var.ssh_user}/subspace/.env",
       "echo NETWORK_NAME=${var.network_name} >> /home/${var.ssh_user}/subspace/.env",
-      "echo DOMAIN_PREFIX=${var.domain-node-config.domain-prefix} >> /home/${var.ssh_user}/subspace/.env",
+      "echo DOMAIN_PREFIX=${module.domain-node-config.domain-prefix} >> /home/${var.ssh_user}/subspace/.env",
       # //todo use a map for domain id and labels
-      "echo DOMAIN_LABEL=${var.domain-node-config.domain-labels[0]} >> /home/${var.ssh_user}/subspace/.env",
-      "echo DOMAIN_ID=${var.domain-node-config.domain-id[0]} >> /home/${var.ssh_user}/subspace/.env",
+      "echo DOMAIN_LABEL=${module.domain-node-config.domain-labels[0]} >> /home/${var.ssh_user}/subspace/.env",
+      "echo DOMAIN_ID=${module.domain-node-config.domain-id[0]} >> /home/${var.ssh_user}/subspace/.env",
       "echo NODE_ID=${count.index} >> /home/${var.ssh_user}/subspace/.env",
       "echo NODE_KEY=$(sed -nr 's/NODE_${count.index}_KEY=//p' /home/${var.ssh_user}/subspace/node_keys.txt) >> /home/${var.ssh_user}/subspace/.env",
       "echo RELAYER_SYSTEM_ID=$(sed -nr 's/NODE_${count.index}_RELAYER_SYSTEM_ID=//p' /home/${var.ssh_user}/subspace/relayer_ids.txt) >> /home/${var.ssh_user}/subspace/.env",
       "echo RELAYER_DOMAIN_ID=$(sed -nr 's/NODE_${count.index}_RELAYER_DOMAIN_ID=//p' /home/${var.ssh_user}/subspace/relayer_ids.txt) >> /home/${var.ssh_user}/subspace/.env",
       "echo NR_API_KEY=${var.nr_api_key} >> /home/${var.ssh_user}/subspace/.env",
       "echo PIECE_CACHE_SIZE=${var.piece_cache_size} >> /home/${var.ssh_user}/subspace/.env",
-      "echo NODE_DSN_PORT=${var.domain-node-config.node-dsn-port} >> /home/${var.ssh_user}/subspace/.env",
+      "echo NODE_DSN_PORT=${module.domain-node-config.node-dsn-port} >> /home/${var.ssh_user}/subspace/.env",
       "echo POT_EXTERNAL_ENTROPY=${var.pot_external_entropy} >> /home/${var.ssh_user}/subspace/.env",
 
       # create docker compose file
-      "bash /home/${var.ssh_user}/subspace/create_compose_file.sh ${var.bootstrap-node-config.reserved-only} ${length(local.domain_nodes_ip_v4)} ${count.index} ${length(local.bootstrap_nodes_ip_v4)} ${length(local.bootstrap_nodes_evm_ip_v4)} ${var.domain-node-config.enable-domains} ${var.domain-node-config.domain-id[0]}",
+      "bash /home/${var.ssh_user}/subspace/create_compose_file.sh ${var.bootstrap-node-config.reserved-only} ${length(local.domain_nodes_ip_v4)} ${count.index} ${length(local.bootstrap_nodes_ip_v4)} ${length(local.bootstrap_nodes_evm_ip_v4)} ${module.domain-node-config.enable-domains} ${module.domain-node-config.domain-id[0]}",
 
       # start subspace node
       "sudo docker compose -f /home/${var.ssh_user}/subspace/docker-compose.yml up -d",

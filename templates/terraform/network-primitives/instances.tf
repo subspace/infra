@@ -1,24 +1,30 @@
-resource "aws_instance" "bootstrap_node" {
+module "bootstrap_node" {
+  source = "../../terraform/aws/ec2"
+
   count              = length(var.aws_region) * var.bootstrap-node-config.instance-count
   ami                = data.aws_ami.ubuntu_amd64.image_id
   instance_type      = var.bootstrap-node-config.instance-type
   subnet_id          = element(aws_subnet.public_subnets.*.id, 0)
   availability_zone  = var.azs
-  ipv6_address_count = length(var.aws_region) * var.bootstrap-node-config.instance-count
-  # Security Group
+  ipv6_address_count = 1
   vpc_security_group_ids = ["${aws_security_group.network_sg.id}"]
-  # the Public SSH key
   key_name                    = var.aws_key_name
   associate_public_ip_address = true
   ebs_optimized               = true
-  ebs_block_device {
-    device_name = "/dev/sda1"
-    volume_size = var.bootstrap-node-config.disk-volume-size
-    volume_type = var.bootstrap-node-config.disk-volume-type
-    iops        = 3000
-    throughput  = 250
-  }
 
+  root_block_device = [
+    {
+      delete_on_termination = true
+      encrypted             = true
+      iops                  = 3000
+      volume_size           = module.bootstrap-node-config.disk-volume-size
+      volume_type           = module.bootstrap-node-config.disk-volume-type
+      throughput            = 250
+      tags                  = {
+        Name = "bootstrap-[count.index]-${var.network_name}-root-volume"
+      }
+    }
+  ]
 
   tags = {
     Name       = "${var.network_name}-bootstrap-${count.index}"
@@ -31,58 +37,38 @@ resource "aws_instance" "bootstrap_node" {
 
   depends_on = [
     aws_subnet.public_subnets,
-    #aws_nat_gateway.nat_gateway,
     aws_internet_gateway.gw
   ]
-
-  lifecycle {
-
-    ignore_changes = [ami, ipv6_address_count]
-
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "cloud-init status --wait",
-      "sudo apt update -y",
-    ]
-
-    on_failure = continue
-
-  }
-
-  # Setting up the ssh connection
-  connection {
-    type        = "ssh"
-    host        = element(self.*.public_ip, count.index)
-    user        = var.ssh_user
-    private_key = file("${var.private_key_path}")
-    timeout     = "300s"
-  }
-
 }
 
-resource "aws_instance" "bootstrap_node_evm" {
-  count              = length(var.aws_region) * var.bootstrap-node-evm-config.instance-count
+module "bootstrap_node_evm" {
+  source = "../../terraform/aws/ec2"
+
+  count              = length(var.aws_region) * module.bootstrap-node-evm-config.instance-count
   ami                = data.aws_ami.ubuntu_amd64.image_id
-  instance_type      = var.bootstrap-node-evm-config.instance-type
+  instance_type      = module.bootstrap-node-evm-config.instance-type
   subnet_id          = element(aws_subnet.public_subnets.*.id, 0)
   availability_zone  = var.azs
-  ipv6_address_count = length(var.aws_region) * var.bootstrap-node-config.instance-count
+  ipv6_address_count = 1
   # Security Group
   vpc_security_group_ids = ["${aws_security_group.network_sg.id}"]
   # the Public SSH key
   key_name                    = var.aws_key_name
   associate_public_ip_address = true
   ebs_optimized               = true
-  ebs_block_device {
-    device_name = "/dev/sda1"
-    volume_size = var.bootstrap-node-config.disk-volume-size
-    volume_type = var.bootstrap-node-config.disk-volume-type
-    iops        = 3000
-    throughput  = 250
-  }
-
+  root_block_device = [
+    {
+      delete_on_termination = true
+      encrypted             = true
+      iops                  = 3000
+      volume_size           = module.bootstrap-node-evm-config.disk-volume-size
+      volume_type           = module.bootstrap-node-evm-config.disk-volume-type
+      throughput            = 250
+      tags                  = {
+        Name = "bootstrap-evm-[count.index]-${var.network_name}-root-volume"
+      }
+    }
+  ]
 
   tags = {
     Name       = "${var.network_name}-bootstrap-evm-${count.index}"
@@ -98,54 +84,36 @@ resource "aws_instance" "bootstrap_node_evm" {
     #aws_nat_gateway.nat_gateway,
     aws_internet_gateway.gw
   ]
-
-  lifecycle {
-
-    ignore_changes = [ami, ipv6_address_count]
-
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "cloud-init status --wait",
-      "sudo apt update -y",
-    ]
-
-    on_failure = continue
-
-  }
-
-  # Setting up the ssh connection
-  connection {
-    type        = "ssh"
-    host        = element(self.*.public_ip, count.index)
-    user        = var.ssh_user
-    private_key = file("${var.private_key_path}")
-    timeout     = "300s"
-  }
-
 }
 
-resource "aws_instance" "full_node" {
-  count              = length(var.aws_region) * var.full-node-config.instance-count
+module "full_node" {
+  source = "../../terraform/aws/ec2"
+
+  count              = length(var.aws_region) * module.full-node-config.instance-count
   ami                = data.aws_ami.ubuntu_amd64.image_id
-  instance_type      = var.full-node-config.instance-type
+  instance_type      = module.full-node-config.instance-type
   subnet_id          = element(aws_subnet.public_subnets.*.id, 0)
   availability_zone  = var.azs
-  ipv6_address_count = length(var.aws_region) * var.bootstrap-node-config.instance-count
+  ipv6_address_count = 1
   # Security Group
   vpc_security_group_ids = ["${aws_security_group.network_sg.id}"]
   # the Public SSH key
   key_name                    = var.aws_key_name
   associate_public_ip_address = true
   ebs_optimized               = true
-  ebs_block_device {
-    device_name = "/dev/sda1"
-    volume_size = var.full-node-config.disk-volume-size
-    volume_type = var.full-node-config.disk-volume-type
-    iops        = 3000
-    throughput  = 250
-  }
+  root_block_device = [
+    {
+      delete_on_termination = true
+      encrypted             = true
+      iops                  = 3000
+      volume_size           = module.full-node-config.disk-volume-size
+      volume_type           = module.full-node-config.disk-volume-type
+      throughput            = 250
+      tags                  = {
+        Name = "full-[count.index]-${var.network_name}-root-volume"
+      }
+    }
+  ]
 
   tags = {
     Name       = "${var.network_name}-full-${count.index}"
@@ -161,55 +129,36 @@ resource "aws_instance" "full_node" {
     #aws_nat_gateway.nat_gateway,
     aws_internet_gateway.gw
   ]
-
-  lifecycle {
-
-    ignore_changes = [ami, ipv6_address_count]
-
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "cloud-init status --wait",
-      "sudo apt update -y",
-    ]
-
-    on_failure = continue
-
-  }
-
-  # Setting up the ssh connection
-  connection {
-    type        = "ssh"
-    host        = element(self.*.public_ip, count.index)
-    user        = var.ssh_user
-    private_key = file("${var.private_key_path}")
-    timeout     = "300s"
-  }
-
 }
 
+module "rpc_node" {
+  source = "../../terraform/aws/ec2"
 
-resource "aws_instance" "rpc_node" {
-  count              = length(var.aws_region) * var.rpc-node-config.instance-count
+  count              = length(var.aws_region) * module.rpc-node-config.instance-count
   ami                = data.aws_ami.ubuntu_amd64.image_id
-  instance_type      = var.rpc-node-config.instance-type
+  instance_type      = module.rpc-node-config.instance-type
   subnet_id          = element(aws_subnet.public_subnets.*.id, 0)
   availability_zone  = var.azs
-  ipv6_address_count = length(var.aws_region) * var.bootstrap-node-config.instance-count
+  ipv6_address_count = 1
   # Security Group
   vpc_security_group_ids = ["${aws_security_group.network_sg.id}"]
   # the Public SSH key
   key_name                    = var.aws_key_name
   associate_public_ip_address = true
   ebs_optimized               = true
-  ebs_block_device {
-    device_name = "/dev/sda1"
-    volume_size = var.rpc-node-config.disk-volume-size
-    volume_type = var.rpc-node-config.disk-volume-type
-    iops        = 3000
-    throughput  = 250
-  }
+  root_block_device = [
+    {
+      delete_on_termination = true
+      encrypted             = true
+      iops                  = 3000
+      volume_size           = module.rpc-node-config.disk-volume-size
+      volume_type           = module.rpc-node-config.disk-volume-type
+      throughput            = 250
+      tags                  = {
+        Name = "rpc-[count.index]-${var.network_name}-root-volume"
+      }
+    }
+  ]
   tags = {
     Name       = "${var.network_name}-rpc-${count.index}"
     name       = "${var.network_name}-rpc-${count.index}"
@@ -224,57 +173,36 @@ resource "aws_instance" "rpc_node" {
     #aws_nat_gateway.nat_gateway,
     aws_internet_gateway.gw
   ]
-
-  lifecycle {
-
-    ignore_changes = [ami, ipv6_address_count]
-
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "cloud-init status --wait",
-      "sudo apt update -y",
-      "sudo DEBIAN_FRONTEND=noninteractive apt-get install curl gnupg openssl net-tools -y",
-    ]
-
-    on_failure = continue
-
-  }
-
-  # Setting up the ssh connection
-  connection {
-    type        = "ssh"
-    host        = element(self.*.public_ip, count.index)
-    user        = var.ssh_user
-    private_key = file("${var.private_key_path}")
-    timeout     = "300s"
-  }
-
 }
 
+module "domain_node" {
+  source = "../../terraform/aws/ec2"
 
-resource "aws_instance" "domain_node" {
-  count              = length(var.aws_region) * var.domain-node-config.instance-count
+  count              = length(var.aws_region) * module.domain-node-config.instance-count
   ami                = data.aws_ami.ubuntu_amd64.image_id
-  instance_type      = var.domain-node-config.instance-type
+  instance_type      = module.domain-node-config.instance-type
   subnet_id          = element(aws_subnet.public_subnets.*.id, 0)
   availability_zone  = var.azs
-  ipv6_address_count = length(var.aws_region) * var.bootstrap-node-config.instance-count
+  ipv6_address_count = 1
   # Security Group
   vpc_security_group_ids = ["${aws_security_group.network_sg.id}"]
   # the Public SSH key
   key_name                    = var.aws_key_name
   associate_public_ip_address = true
   ebs_optimized               = true
-  ebs_block_device {
-    device_name = "/dev/sda1"
-    volume_size = var.domain-node-config.disk-volume-size
-    volume_type = var.domain-node-config.disk-volume-type
-    iops        = 3000
-    throughput  = 250
-  }
-
+  root_block_device = [
+    {
+      delete_on_termination = true
+      encrypted             = true
+      iops                  = 3000
+      volume_size           = module.domain-node-config.disk-volume-size
+      volume_type           = module.domain-node-config.disk-volume-type
+      throughput            = 250
+      tags                  = {
+        Name = "domain-[count.index]-${var.network_name}-root-volume"
+      }
+    }
+  ]
   tags = {
     Name       = "${var.network_name}-domain-${count.index}"
     name       = "${var.network_name}-domain-${count.index}"
@@ -289,55 +217,36 @@ resource "aws_instance" "domain_node" {
     #aws_nat_gateway.nat_gateway,
     aws_internet_gateway.gw
   ]
-
-  lifecycle {
-
-    ignore_changes = [ami, ipv6_address_count]
-
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "cloud-init status --wait",
-      "sudo apt update -y",
-    ]
-
-    on_failure = continue
-
-  }
-
-  # Setting up the ssh connection
-  connection {
-    type        = "ssh"
-    host        = element(self.*.public_ip, count.index)
-    user        = var.ssh_user
-    private_key = file("${var.private_key_path}")
-    timeout     = "300s"
-  }
-
 }
 
+module "farmer_node" {
+  source = "../../terraform/aws/ec2"
 
-resource "aws_instance" "farmer_node" {
-  count              = length(var.aws_region) * var.farmer-node-config.instance-count
+  count              = length(var.aws_region) * module.farmer-node-config.instance-count
   ami                = data.aws_ami.ubuntu_amd64.image_id
-  instance_type      = var.farmer-node-config.instance-type
+  instance_type      = module.farmer-node-config.instance-type
   subnet_id          = element(aws_subnet.public_subnets.*.id, 0)
   availability_zone  = var.azs
-  ipv6_address_count = length(var.aws_region) * var.bootstrap-node-config.instance-count
+  ipv6_address_count = 1
   # Security Group
   vpc_security_group_ids = ["${aws_security_group.network_sg.id}"]
   # the Public SSH key
   key_name                    = var.aws_key_name
   associate_public_ip_address = true
   ebs_optimized               = true
-  ebs_block_device {
-    device_name = "/dev/sda1"
-    volume_size = var.farmer-node-config.disk-volume-size
-    volume_type = var.farmer-node-config.disk-volume-type
-    iops        = 3000
-    throughput  = 250
-  }
+  root_block_device = [
+    {
+      delete_on_termination = true
+      encrypted             = true
+      iops                  = 3000
+      volume_size           = module.farmer-node-config.disk-volume-size
+      volume_type           = module.farmer-node-config.disk-volume-type
+      throughput            = 250
+      tags                  = {
+        Name = "farmer-[count.index]-${var.network_name}-root-volume"
+      }
+    }
+  ]
   tags = {
     Name       = "${var.network_name}-farmer-${count.index}"
     name       = "${var.network_name}-farmer-${count.index}"
@@ -352,30 +261,4 @@ resource "aws_instance" "farmer_node" {
     #aws_nat_gateway.nat_gateway,
     aws_internet_gateway.gw
   ]
-
-  lifecycle {
-
-    ignore_changes = [ami, ipv6_address_count]
-
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "cloud-init status --wait",
-      "sudo apt update -y",
-    ]
-
-    on_failure = continue
-
-  }
-
-  # Setting up the ssh connection
-  connection {
-    type        = "ssh"
-    host        = element(self.*.public_ip, count.index)
-    user        = var.ssh_user
-    private_key = file("${var.private_key_path}")
-    timeout     = "300s"
-  }
-
 }
