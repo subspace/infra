@@ -1,0 +1,49 @@
+name: Main CD for Ephememeral Devnet Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        required: true
+        type: string
+      genesis_hash:
+        required: true
+        type: string
+      run_apply:
+        description: "The code needs to be deployed or not"
+        type: string
+        default: "no"
+      run_destroy:
+        description: "The resources need to be destroyed or not"
+        type: string
+        default: "no"
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - "!main"
+    paths:
+      - "testing-framework/hetzner/network/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/terraform_template_ephemeral_deploy.yml
+    with:
+      project: testing-framework
+      branch: ${{ github.event.inputs.branch }}
+      genesis_hash: ${{ github.event.inputs.genesis_hash }}
+      instance: hetzner
+      resource: network
+      tf_workspace_name: ephemeral-devnet-hetzner
+      tf_version: 1.5.7
+      tf_organization: subspace
+      run_apply: ${{ github.event.inputs.run_apply }}
+      run_destroy: ${{ github.event.inputs.run_destroy }}
+    secrets:
+      TRANSCRYPT: ${{ secrets.TRANSCRYPT }}
+      TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
