@@ -1,0 +1,168 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "squid.fullname" . }}-app
+  namespace: {{ .Values.namespace | quote }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  minReadySeconds: 5
+  serviceName: {{ include "squid.fullname" . }}-app
+  template:
+    metadata:
+      labels:
+        app: {{ include "squid.name" . }}
+        release: {{ .Release.Name }}
+    matchLabels:
+      app: {{ include "squid.name" . }}
+      release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ include "squid.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: postgres
+          image: postgres:16
+          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+          ports:
+            - name: db
+              containerPort: 5432
+              protocol: TCP
+          env:
+            - name: POSTGRES_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "squid.fullname" . }}-configmap
+                  key: POSTGRES_HOST
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "squid.fullname" . }}-configmap
+                  key: POSTGRES_DB
+            - name: POSTGRES_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "squid.fullname" . }}-configmap
+                  key: POSTGRES_PORT
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "squid.fullname" . }}-postgres-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "squid.fullname" . }}-postgres-secret
+                  key: POSTGRES_PASSWORD
+          volumeMounts:
+            - mountPath: "/var/lib/postgresql/data"
+              name: {{ include "squid.fullname" . }}-data
+            - mountPath: "/var/lib/postgresql/postgres.conf"
+              name: config
+              subPath: postgres.conf
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - postgres
+                - -h
+                - 127.0.0.1
+                - -p
+                - "5432"
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - postgres
+                - -h
+                - 127.0.0.1
+                - -p
+                - "5432"
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        - name: processor
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+          ports:
+            - name: processor
+              containerPort: 3000
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: POSTGRES_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "squid.fullname" . }}-configmap
+                  key: POSTGRES_HOST
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "squid.fullname" . }}-configmap
+                  key: POSTGRES_DB
+            - name: POSTGRES_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "squid.fullname" . }}-configmap
+                  key: POSTGRES_PORT
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "squid.fullname" . }}-postgres-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "squid.fullname" . }}-postgres-secret
+                  key: POSTGRES_PASSWORD
+          livenessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 30
+          readinessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 6
+            periodSeconds: 30
+          volumeMounts:
+            - mountPath: "/var/processor"
+              name: {{ include "squid.fullname" . }}-data
+        - name: graphql
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image_api.repository }}:{{ .Values.image_api.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+          ports:
+            - name: graphql
+              containerPort: 4350
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: 4350
+            initialDelaySeconds: 5
+            periodSeconds: 30
+          readinessProbe:
+            tcpSocket:
+              port: 4350
+            initialDelaySeconds: 6
+            periodSeconds: 30
+          volumeMounts:
+            - mountPath: "/var/graphql"
+              name: {{ include "squid.fullname" . }}-data
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "squid.fullname" . }}-postgres-configmap
+        - name: {{ include "squid.fullname" . }}-data
+          persistentVolumeClaim:
+            claimName: {{ include "squid.fullname" . }}-data-pvc

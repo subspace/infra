@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rpc-node-ingress
+  namespace: rpc-node
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  tls:
+  - hosts:
+    - "rpc.devnet.subspace.network"
+    secretName: tls-secret  # Ensure you have this TLS secret in your namespace
+  rules:
+  - host: "rpc.devnet.subspace.network"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: rpc-node-service
+            port:
+              number: 9944

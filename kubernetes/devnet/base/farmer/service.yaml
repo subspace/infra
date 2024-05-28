@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: farmer-node-service
+  namespace: farmer
+spec:
+  selector:
+    app: farmer-node
+  ports:
+  - name: p2p
+    protocol: TCP
+    port: 30333
+    targetPort: 30333
+  - name: p2p-udp
+    protocol: UDP
+    port: 30333
+    targetPort: 30333
+  - name: dsn_port
+    protocol: TCP
+    port: 30433
+    targetPort: 30433
+  - name: dsn_port_udp
+    protocol: UDP
+    port: 30433
+    targetPort: 30433
+  - name: rpc
+    protocol: TCP
+    port: 9944
+    targetPort: 9944
+  - name: prometheus
+    protocol: TCP
+    port: 9615
+    targetPort: 9615
+  - name: farmer_dsn
+    protocol: TCP
+    port: 30533
+    targetPort: 30533
+  - name: farmer_dsn_udp
+    protocol: UDP
+    port: 30533
+    targetPort: 30533
+  - name: famer_prometheus
+    protocol: TCP
+    port: 9616
+    targetPort: 9616
+  type: ClusterIP

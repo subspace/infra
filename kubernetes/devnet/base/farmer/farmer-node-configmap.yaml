@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: farmer-node-config
+  namespace: farmer
+data:
+  NETWORK_NAME: "network-name"
+  EXTERNAL_IP: "external-ip"
+  EXTERNAL_IP_V6: "external-ip-v6"
+  NODE_ID: "node-id"
+  NODE_PEER_ID: "node-peer-id"
+  BOOTSTRAP_0_PEER_ID: "bootstrap-0-peer-id"
+  BOOTSTRAP_1_PEER_ID: "bootstrap-1-peer-id"
+  DOCKER_TAG: "${DOCKER_TAG}"
+  PLOT_SIZE: "${PLOT_SIZE}"

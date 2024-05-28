@@ -1,0 +1,8 @@
+POSTGRES_HOST=""
+POSTGRES_USER=""
+POSTGRES_DB="squid"
+POSTGRES_PASSWORD=""
+POSTGRES_PORT=5432
+ARCHIVE_ENDPOINT="https://archive.gemini-3h.subspace.network/api"
+RPC_ENDPOINT="wss://rpc-squids.gemini-3h.subspace.network/ws"
+GQL_PORT=4350

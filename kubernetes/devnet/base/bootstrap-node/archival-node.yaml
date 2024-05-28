@@ -1,0 +1,280 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: archival-node
+  namespace: bootstrap-node
+  labels:
+    app: archival-node
+spec:
+  serviceName: "archival-node-service"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: archival-node
+  template:
+    metadata:
+      labels:
+        app: archival-node
+    spec:
+      securityContext:
+        fsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: bootstrap-node
+                operator: In
+                values:
+                - "1"
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: bootstrap-node
+                    operator: In
+                    values:
+                    - "1"
+              topologyKey: "kubernetes.io/hostname"
+      tolerations:
+      - key: "bootstrap-node"
+        operator: "Equal"
+        value: "1"
+        effect: "NoSchedule"
+      containers:
+      - name: bootstrap-node
+        image: ghcr.io/subspace/bootstrap-node:${DOCKER_TAG}
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+              - ALL
+        env:
+        - name: RUST_LOG
+          value: "info"
+        - name: GENESIS_HASH
+          valueFrom:
+            configMapKeyRef:
+              name: bootstrap-node-config
+              key: GENESIS_HASH
+        - name: DSN_NODE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: my-secret
+              key: nodeKey
+        - name: EXTERNAL_IP
+          valueFrom:
+            configMapKeyRef:
+              name: bootstrap-node-config
+              key: EXTERNAL_IP
+        - name: EXTERNAL_IP_V6
+          valueFrom:
+            configMapKeyRef:
+              name: bootstrap-node-config
+              key: EXTERNAL_IP_V6
+        - name: NETWORK_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: bootstrap-node-config
+              key: NETWORK_NAME
+        - name: NODE_ID
+          valueFrom:
+            configMapKeyRef:
+              name: bootstrap-node-config
+              key: NODE_ID
+        - name: NODE_PEER_ID
+          valueFrom:
+            configMapKeyRef:
+              name: bootstrap-node-config
+              key: NODE_PEER_ID
+        - name: BOOTSTRAP_0_SUBSPACE_PEER_ID
+          valueFrom:
+            configMapKeyRef:
+              name: bootstrap-node-config
+              key: BOOTSTRAP_0_SUBSPACE_PEER_ID
+        - name: BOOTSTRAP_1_SUBSPACE_PEER_ID
+          valueFrom:
+            configMapKeyRef:
+              name: bootstrap-node-config
+              key: BOOTSTRAP_1_SUBSPACE_PEER_ID
+        ports:
+        - containerPort: 30533
+          protocol: TCP
+        - containerPort: 30533
+          protocol: UDP
+        - containerPort: 9616
+          protocol: TCP
+        livenessProbe:
+          tcpSocket:
+            port: 30533
+          initialDelaySeconds: 60
+          periodSeconds: 60
+        readinessProbe:
+          tcpSocket:
+            port: 30533
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        args:
+          - "start"
+          - "--metrics-endpoints=0.0.0.0:9616"
+          - "--keypair"
+          - ${DSN_NODE_KEY}
+          - "--listen-on"
+          - "/ip4/0.0.0.0/udp/30533/quic-v1"
+          - "--listen-on"
+          - "/ip4/0.0.0.0/tcp/30533"
+          - "--listen-on"
+          - "/ip6/::/udp/30533/quic-v1"
+          - "--listen-on"
+          - "/ip6/::/tcp/30533"
+          - "--protocol-version"
+          - ${GENESIS_HASH}
+          - "--in-peers"
+          - "1000"
+          - "--out-peers"
+          - "1000"
+          - "--pending-in-peers"
+          - "1000"
+          - "--pending-out-peers"
+          - "1000"
+          - "--external-address"
+          - "/ip4/${EXTERNAL_IP}/udp/30533/quic-v1"
+          - "--external-address"
+          - "/ip4/${EXTERNAL_IP}/tcp/30533"
+          - "--external-address"
+          - "/ip6/${EXTERNAL_IP_V6}/udp/30533/quic-v1"
+          - "--external-address"
+          - "/ip6/${EXTERNAL_IP_V6}/tcp/30533"
+          - "--reserved-peers"
+          - "/dns/bootstrap-0.${NETWORK_NAME}.subspace.network/udp/30533/quic-v1/p2p/${BOOTSTRAP_0_SUBSPACE_PEER_ID}"
+          - "--bootstrap-nodes"
+          - "/dns/bootstrap-0.${NETWORK_NAME}.subspace.network/udp/30533/quic-v1/p2p/${BOOTSTRAP_0_SUBSPACE_PEER_ID}"
+          - "--reserved-peers"
+          - "/dns/bootstrap-1.${NETWORK_NAME}.subspace.network/udp/30533/quic-v1/p2p/${BOOTSTRAP_1_SUBSPACE_PEER_ID}"
+          - "--bootstrap-nodes"
+          - "/dns/bootstrap-1.${NETWORK_NAME}.subspace.network/udp/30533/quic-v1/p2p/${BOOTSTRAP_1_SUBSPACE_PEER_ID}"
+
+      - name: archival-node
+        image: ghcr.io/subspace/node:${DOCKER_TAG}
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+              - ALL
+        env:
+        - name: RUST_LOG
+          value: "info"
+        - name: NETWORK_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: bootstrap-node-config
+              key: NETWORK_NAME
+        - name: EXTERNAL_IP
+          valueFrom:
+            configMapKeyRef:
+              name: bootstrap-node-config
+              key: EXTERNAL_IP
+        - name: EXTERNAL_IP_V6
+          valueFrom:
+            configMapKeyRef:
+              name: bootstrap-node-config
+              key: EXTERNAL_IP_V6
+        - name: NODE_ID
+          valueFrom:
+            configMapKeyRef:
+              name: bootstrap-node-config
+              key: NODE_ID
+        - name: NODE_PEER_ID
+          valueFrom:
+            configMapKeyRef:
+              name: bootstrap-node-config
+              key: NODE_PEER_ID
+        - name: BOOTSTRAP_0_PEER_ID
+          valueFrom:
+            configMapKeyRef:
+              name: bootstrap-node-config
+              key: BOOTSTRAP_0_PEER_ID
+        - name: BOOTSTRAP_1_PEER_ID
+          valueFrom:
+            configMapKeyRef:
+              name: bootstrap-node-config
+              key: BOOTSTRAP_1_PEER_ID
+        args:
+          - "run"
+          - "--chain"
+          - "$(NETWORK_NAME)"
+          - "--base-path"
+          - "/var/subspace"
+          - "--state-pruning"
+          - "archive"
+          - "--blocks-pruning"
+          - "256"
+          - "--listen-on"
+          - "/ip4/0.0.0.0/tcp/30333"
+          - "--listen-on"
+          - "/ip6/::/tcp/30333"
+          - "--dsn-external-address"
+          - "/ip4/$(EXTERNAL_IP)/udp/30433/quic-v1"
+          - "--dsn-external-address"
+          - "/ip4/$(EXTERNAL_IP)/tcp/30433"
+          - "--dsn-external-address"
+          - "/ip6/$(EXTERNAL_IP_V6)/udp/30433/quic-v1"
+          - "--dsn-external-address"
+          - "/ip6/$(EXTERNAL_IP_V6)/tcp/30433"
+          - "--node-key"
+          - "$(NODE_KEY)"
+          - "--in-peers"
+          - "1000"
+          - "--out-peers"
+          - "1000"
+          - "--dsn-in-connections"
+          - "1000"
+          - "--dsn-out-connections"
+          - "1000"
+          - "--dsn-pending-in-connections"
+          - "1000"
+          - "--dsn-pending-out-connections"
+          - "1000"
+          - "--prometheus-listen-on"
+          - "0.0.0.0:9615"
+          - "--reserved-nodes"
+          - "/dns/bootstrap-0.$(NETWORK_NAME).subspace.network/tcp/30333/p2p/$(BOOTSTRAP_0_PEER_ID)"
+          - "--bootstrap-nodes"
+          - "/dns/bootstrap-1.$(NETWORK_NAME).subspace.network/tcp/30333/p2p/$(BOOTSTRAP_1_PEER_ID)"
+        ports:
+        - containerPort: 30333
+          protocol: TCP
+        - containerPort: 30333
+          protocol: UDP
+        - containerPort: 30433
+          protocol: TCP
+        - containerPort: 30433
+          protocol: UDP
+        - containerPort: 9615
+          protocol: TCP
+        volumeMounts:
+        - name: bootstrap-node-data
+          mountPath: /var/subspace
+        resources:
+          requests:
+            memory: "500Mi"
+            cpu: "500m"
+        livenessProbe:
+          tcpSocket:
+            port: 30333
+          initialDelaySeconds: 60
+          periodSeconds: 60
+        readinessProbe:
+          tcpSocket:
+            port: 30333
+          initialDelaySeconds: 30
+          periodSeconds: 30
+      volumes:
+      - name: bootstrap-node-data
+        persistentVolumeClaim:
+          claimName: bootstrap-node-pvc

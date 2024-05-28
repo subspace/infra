@@ -1,0 +1,162 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: domain-node
+spec:
+  serviceName: "domain-node-service"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: domain-node
+  template:
+    metadata:
+      labels:
+        app: domain-node
+    spec:
+      securityContext:
+        fsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: node-role.kubernetes.io/domain
+                operator: In
+                values:
+                - "true"
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                    - domain-node
+              topologyKey: "kubernetes.io/hostname"
+      tolerations:
+      - key: "dedicated"
+        operator: "Equal"
+        value: "domain-node"
+        effect: "NoSchedule"
+      containers:
+      - name: domain-node
+        image: ghcr.io/subspace/node:${DOCKER_TAG}
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+              - ALL
+        envFrom:
+        - configMapRef:
+            name: domain-node-config
+        ports:
+        - containerPort: 30333
+        - containerPort: 30433
+        - containerPort: 30334
+        - containerPort: 8944
+        - containerPort: 9615
+        volumeMounts:
+        - name: domain-node-data
+          mountPath: /var/subspace
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
+        livenessProbe:
+          tcpSocket:
+            port: 8944
+          initialDelaySeconds: 60
+          periodSeconds: 60
+        readinessProbe:
+          tcpSocket:
+            port: 8944
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        args:
+          - "run"
+          - "--chain"
+          - "$(NETWORK_NAME)"
+          - "--base-path"
+          - "/var/subspace"
+          - "--state-pruning"
+          - "archive"
+          - "--blocks-pruning"
+          - "archive"
+          - "--listen-on"
+          - "/ip4/0.0.0.0/tcp/30333"
+          - "--listen-on"
+          - "/ip6/::/tcp/30333"
+          - "--dsn-external-address"
+          - "/ip4/$(EXTERNAL_IP)/udp/30433/quic-v1"
+          - "--dsn-external-address"
+          - "/ip4/$(EXTERNAL_IP)/tcp/30433"
+          - "--dsn-external-address"
+          - "/ip6/$(EXTERNAL_IP_V6)/udp/30433/quic-v1"
+          - "--dsn-external-address"
+          - "/ip6/$(EXTERNAL_IP_V6)/tcp/30433"
+          - "--node-key"
+          - "$(NODE_KEY)"
+          - "--in-peers"
+          - "500"
+          - "--out-peers"
+          - "250"
+          - "--rpc-max-connections"
+          - "10000"
+          - "--rpc-cors"
+          - "all"
+          - "--rpc-listen-on"
+          - "0.0.0.0:9944"
+          - "--rpc-methods"
+          - "safe"
+          - "--prometheus-listen-on"
+          - "0.0.0.0:9615"
+          - "--reserved-nodes"
+          - "/dns/bootstrap-0.$(NETWORK_NAME).subspace.network/tcp/30333/p2p/$(BOOTSTRAP_0_PEER_ID)"
+          - "--bootstrap-nodes"
+          - "/dns/bootstrap-0.$(NETWORK_NAME).subspace.network/tcp/30333/p2p/$(BOOTSTRAP_0_PEER_ID)"
+          - "--reserved-nodes"
+          - "/dns/bootstrap-1.$(NETWORK_NAME).subspace.network/tcp/30333/p2p/$(BOOTSTRAP_1_PEER_ID)"
+          - "--bootstrap-nodes"
+          - "/dns/bootstrap-1.$(NETWORK_NAME).subspace.network/tcp/30333/p2p/$(BOOTSTRAP_1_PEER_ID)"
+          - "--dsn-reserved-peers"
+          - "/dns/bootstrap-0.$(NETWORK_NAME).subspace.network/udp/30533/quic-v1/p2p/$(BOOTSTRAP_0_SUBSPACE_PEER_ID)"
+          - "--dsn-bootstrap-nodes"
+          - "/dns/bootstrap-0.$(NETWORK_NAME).subspace.network/udp/30533/quic-v1/p2p/$(BOOTSTRAP_0_SUBSPACE_PEER_ID)"
+          - "--dsn-reserved-peers"
+          - "/dns/bootstrap-1.$(NETWORK_NAME).subspace.network/udp/30533/quic-v1/p2p/$(BOOTSTRAP_1_SUBSPACE_PEER_ID)"
+          - "--dsn-bootstrap-nodes"
+          - "/dns/bootstrap-1.$(NETWORK_NAME).subspace.network/udp/30533/quic-v1/p2p/$(BOOTSTRAP_1_SUBSPACE_PEER_ID)"
+          - "--"
+          - "--state-pruning"
+          - "archive"
+          - "--blocks-pruning"
+          - "archive"
+          - "--domain-id"
+          - "$(DOMAIN_ID)"
+          - "--listen-on"
+          - "/ip4/0.0.0.0/tcp/30334"
+          - "--rpc-cors"
+          - "all"
+          - "--rpc-listen-on"
+          - "0.0.0.0:8944"
+          - "--rpc-methods"
+          - "safe"
+          - "--operator-id"
+          - "0"
+          - "--reserved-nodes"
+          - "/dns/bootstrap-0.nova.$(NETWORK_NAME).subspace.network/tcp/30334/p2p/$(BOOTSTRAP_NODE_0_OPERATOR_PEER_ID)"
+          - "--bootstrap-nodes"
+          - "/dns/bootstrap-0.nova.$(NETWORK_NAME).subspace.network/tcp/30334/p2p/$(BOOTSTRAP_NODE_0_OPERATOR_PEER_ID)"
+          - "--reserved-nodes"
+          - "/dns/bootstrap-1.nova.$(NETWORK_NAME).subspace.network/tcp/30334/p2p/$(BOOTSTRAP_0_OPERATOR_PEER_ID)"
+          - "--bootstrap-nodes"
+          - "/dns/bootstrap-1.nova.$(NETWORK_NAME).subspace.network/tcp/30334/p2p/$(BOOTSTRAP_1_OPERATOR_PEER_ID)"
+
+      volumes:
+      - name: domain-node-data
+        persistentVolumeClaim:
+          claimName: domain-node-pvc

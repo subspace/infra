@@ -1,0 +1,45 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "squid.fullname" . }}-ingress
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "squid.name" . }}
+    helm.sh/chart: {{ include "squid.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- with .Values.annotations }}
+  annotations:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - {{ .Values.ingress.hosts | first | quote }}
+      secretName: {{ .Values.ingress.tls.secretName | quote }}
+  rules:
+    {{- range .Values.ingress.hosts }}
+    - host: {{ . | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path | quote }}
+            pathType: {{ .pathType | quote }}
+            backend:
+              service:
+                name: {{ .Values.lb_service.name | quote }}
+                port:
+                  number: {{ .Values.lb_service.port }}
+          {{- end }}
+    {{- end }}
+
+---
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/tls
+metadata:
+  name: acme-tls-secret
+data:
+  tls.crt: {{ .Values.ingress.tls.crt | quote }}
+  tls.key: {{ .Values.ingress.tls.key | quote }}

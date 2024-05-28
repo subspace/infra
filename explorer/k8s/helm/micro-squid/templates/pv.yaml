@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: squid-data-pv
+spec:
+  capacity:
+    storage: {{ .Values.persistence.size }}
+  volumeMode: Filesystem
+  accessModes:
+{{ toYaml .Values.persistence.accessModes | indent 4 }}
+  storageClassName: {{ default "efs-sc" .Values.persistence.storageClass | quote }}
+  persistentVolumeReclaimPolicy: Retain
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: fs-073d77123471b2917

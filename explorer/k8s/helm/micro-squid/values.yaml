@@ -1,0 +1,178 @@
+# Default values for squid.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+administrator:
+  email: "who@example.org"
+
+namespace: squid
+
+image:
+  repository: ghcr.io/subspace/blockexplorer-processor
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+image_api:
+  repository: ghcr.io/subspace/blockexplorer-api-server
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+
+securityContext:
+  allowPrivilegeEscalation: false
+
+service:
+  type: ClusterIP
+  ports:
+    - port: 5432
+      name: db
+      targetPort: 5432
+      protocol: TCP
+    - port: 3000
+      name: processor
+      targetPort: 3000
+      protocol: TCP
+    - port: 4350
+      name: graphql
+      targetPort: 4350
+      protocol: TCP
+
+lb_service:
+  type: LoadBalancer
+  lb_ports:
+    - port: 4350
+      name: graphql
+      targetPort: 4350
+      protocol: TCP
+
+annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/proxy-set-header: "Host $host"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "120s"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "120s"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "120s"
+    nginx.ingress.kubernetes.io/proxy-next-upstream: "http_504"
+    nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "3s"
+    nginx.ingress.kubernetes.io/proxy-next-upstream-tries: "3"
+    nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
+    nginx.ingress.kubernetes.io/auth-keepalive-timeout: "120s"
+    nginx.ingress.kubernetes.io/client-max-body-size: "8m"
+    nginx.ingress.kubernetes.io/proxy-buffering: "on"
+    nginx.ingress.kubernetes.io/proxy-buffers-number: "4"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "8k"
+    nginx.ingress.kubernetes.io/proxy-max-temp-file-size: "1024m"
+    nginx.ingress.kubernetes.io/proxy-http-version: "1.0"
+    nginx.ingress.kubernetes.io/ssl-ciphers: "ALL:!aNULL:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP"
+    nginx.ingress.kubernetes.io/ssl-prefer-server-ciphers: "true"
+    nginx.ingress.kubernetes.io/connection-proxy-header: "keep-alive"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "PUT GET, POST, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For, X-REAL-IP"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-max-age: "3600"
+
+ingress:
+  enabled: false
+  className: "nginx"
+
+  hosts:
+    - host: squid.gemini-3h.subspace.network
+      path: /graphql
+      pathType: ImplementationSpecific
+      port: 4444
+
+  tls:
+      secretName: acme-tls-secret
+      hosts: squid.gemini-3h.subspace.network
+      certificate: {}
+      key: {}
+
+  proxySetHeaders: {}
+  # -- Will add custom headers before sending response traffic to the client according to: https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#add-headers
+  addHeaders: {}
+  # -- Optionally customize the pod dnsConfig.
+  dnsConfig: {}
+  # -- Optionally customize the pod hostname.
+
+resources:
+  requests:
+    cpu: 2
+    memory: 200Mi
+
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+replicaCount: 1
+
+nodeSelector:
+  squid.gemini-3h.subspace.network/role: squid-node
+
+
+tolerations:
+  - key: "squid.gemini-3h.subspace.network/role"
+    operator: "Equal"
+    value: "squid-node"
+    effect: "NoSchedule"
+
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: squid.gemini-3h.subspace.network/role
+          operator: In
+          values:
+          - squid-node
+
+
+persistence:
+  enabled: true
+  enableKubeWorkerClaim: true
+  existingClaim: ""
+  accessModes:
+    - ReadWriteOnce
+  size: 150G
+  storageClass: ""
+
+
+prometheus:
+  enabled: true
+  interval: 15s
+
+# make sure to change this to secure password in production
+postgres:
+  postgresUser: postgres
+  postgresPassword: postgres
+  postgresDatabase: postgres
+  postgresPort: 5432
+  postgresHost: localhost

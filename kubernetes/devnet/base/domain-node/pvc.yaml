@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: domain-node-pvc
+  namespace: default  # Ensure this is set to the namespace where your workload runs
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ebs-storageclass
+  resources:
+    requests:
+      storage: 100Gi

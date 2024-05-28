@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rpc-node-service
+  namespace: rpc-node
+spec:
+  selector:
+    app: rpc-node
+  ports:
+  - name: p2p
+    protocol: TCP
+    port: 30333
+    targetPort: 30333
+  - name: p2p-udp
+    protocol: UDP
+    port: 30333
+    targetPort: 30333
+  - name: dsn_port
+    protocol: TCP
+    port: 30433
+    targetPort: 30433
+  - name: dsn_port_udp
+    protocol: UDP
+    port: 30433
+    targetPort: 30433
+  - name: bootnode_port_udp
+    protocol: UDP
+    port: 30533
+    targetPort: 30533
+  - name: rpc
+    protocol: TCP
+    port: 9944
+    targetPort: 9944
+  - name: prometheus
+    protocol: TCP
+    port: 9615
+    targetPort: 9615
+  type: ClusterIP
