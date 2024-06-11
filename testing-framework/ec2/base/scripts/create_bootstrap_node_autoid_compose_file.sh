@@ -153,19 +153,6 @@ fi
 
 if [ "${enable_domains}" == "true" ]; then
     {
-    # core domain
-      echo '      "--",'
-      echo '      "--domain-id", "${DOMAIN_ID_EVM}",'
-      echo '      "--state-pruning", "archive",'
-      echo '      "--blocks-pruning", "archive",'
-      echo '      "--listen-on", "/ip4/0.0.0.0/tcp/${OPERATOR_PORT}",'
-      echo '      "--rpc-cors", "all",'
-      echo '      "--rpc-listen-on", "0.0.0.0:8944",'
-    for (( i = 0; i < node_count; i++ )); do
-      addr=$(sed -nr "s/NODE_${i}_OPERATOR_MULTI_ADDR_TCP=//p" ~/subspace/node_keys.txt)
-      echo "      \"--reserved-nodes\", \"${addr}\"," >> ~/subspace/subspace/docker-compose.yml
-      echo "      \"--bootstrap-nodes\", \"${addr}\"," >> ~/subspace/subspace/docker-compose.yml
-    done
     # auto domain
       echo '      "--",'
       echo '      "--domain-id", "${DOMAIN_ID_AUTO}",'

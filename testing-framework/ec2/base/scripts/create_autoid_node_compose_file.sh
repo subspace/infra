@@ -60,7 +60,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.archival-node.loadbalancer.server.port=8944"
-      - "traefik.http.routers.archival-node.rule=Host(\`\${DOMAIN_PREFIX_EVM}-\${DOMAIN_ID_EVM}.\${NETWORK_NAME}.subspace.network\`) && Path(\`/ws\`)"
+      - "traefik.http.routers.archival-node.rule=Host(\`\${DOMAIN_PREFIX_AUTO}-\${DOMAIN_ID_AUTO}.\${NETWORK_NAME}.subspace.network\`) && Path(\`/ws\`)"
       - "traefik.http.routers.archival-node.tls=true"
       - "traefik.http.routers.archival-node.tls.certresolver=le"
       - "traefik.http.routers.archival-node.entrypoints=websecure"
@@ -98,7 +98,7 @@ node_count=${2}
 current_node=${3}
 bootstrap_node_count=${4}
 dsn_bootstrap_node_count=${4}
-bootstrap_node_evm_count=${5}
+bootstrap_node_autoid_count=${5}
 enable_domains=${6}
 domain_id=${7}
 
@@ -127,9 +127,9 @@ fi
 
 if [ "${enable_domains}" == "true" ]; then
   {
-    # core domain
+    # auto domain
     echo '      "--",'
-    echo '      "--domain-id", "${DOMAIN_ID_EVM}",'
+    echo '      "--domain-id", "${DOMAIN_ID_AUTO}",'
     echo '      "--state-pruning", "archive",'
     echo '      "--blocks-pruning", "archive",'
     echo '      "--operator-id", "0",'
@@ -139,8 +139,8 @@ if [ "${enable_domains}" == "true" ]; then
     echo '      "--rpc-methods", "safe",'
     echo '      "--rpc-listen-on", "0.0.0.0:8944",'
 
-    for (( i = 0; i < bootstrap_node_evm_count; i++ )); do
-      addr=$(sed -nr "s/NODE_${i}_MULTI_ADDR_TCP=//p" ~/subspace/bootstrap_node_evm_keys.txt)
+    for (( i = 0; i < bootstrap_node_autoid_count; i++ )); do
+      addr=$(sed -nr "s/NODE_${i}_MULTI_ADDR_TCP=//p" ~/subspace/bootstrap_node_autoid_keys.txt)
       echo "      \"--reserved-nodes\", \"${addr}\"," >> ~/subspace/subspace/docker-compose.yml
       echo "      \"--bootstrap-nodes\", \"${addr}\"," >> ~/subspace/subspace/docker-compose.yml
     done

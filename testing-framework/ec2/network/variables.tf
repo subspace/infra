@@ -7,14 +7,14 @@ variable "farmer_reward_address" {
 variable "domain_id" {
   description = "Domain ID"
   type        = list(number)
-  default     = [0]
+  default     = [0, 1]
 }
 
 //todo change this to a map
 variable "domain_labels" {
   description = "Tag of the domain to run"
   type        = list(string)
-  default     = ["evm"]
+  default     = ["nova", "autoid"]
 }
 
 variable "instance_type" {
@@ -45,11 +45,13 @@ variable "azs" {
 variable "instance_count" {
   type = map(number)
   default = {
-    bootstrap     = 1
-    node          = 1
-    farmer        = 1
-    domain        = 1
-    evm_bootstrap = 1
+    bootstrap        = 1
+    node             = 1
+    farmer           = 1
+    domain           = 1
+    autoid           = 1
+    evm_bootstrap    = 1
+    autoid_bootstrap = 1
   }
 }
 

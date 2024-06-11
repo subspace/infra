@@ -19,11 +19,13 @@ variable "azs" {
 variable "instance_count" {
   type = map(number)
   default = {
-    bootstrap     = 1
-    node          = 1
-    domain        = 1
-    farmer        = 1
-    evm_bootstrap = 1
+    bootstrap        = 1
+    node             = 1
+    domain           = 1
+    autoid           = 1
+    farmer           = 1
+    evm_bootstrap    = 1
+    autoid_bootstrap = 1
   }
 }
 
@@ -85,7 +87,28 @@ variable "domain-node-config" {
     instance-count     = number
     repo-org           = string
     docker-tag         = string
-    domain-prefix      = string
+    domain-prefix      = list(string)
+    reserved-only      = bool
+    prune              = bool
+    node-dsn-port      = number
+    enable-domains     = bool
+    domain-id          = list(number)
+    domain-labels      = list(string)
+    disk-volume-size   = number
+    disk-volume-type   = string
+  })
+}
+
+variable "autoid-node-config" {
+  description = "Autoid node deployment config"
+  type = object({
+    instance-type      = string
+    deployment-version = number
+    regions            = list(string)
+    instance-count     = number
+    repo-org           = string
+    docker-tag         = string
+    domain-prefix      = list(string)
     reserved-only      = bool
     prune              = bool
     node-dsn-port      = number
@@ -118,6 +141,26 @@ variable "bootstrap-node-config" {
 
 variable "bootstrap-node-evm-config" {
   description = "Bootstrap node evm domain deployment config"
+  type = object({
+    instance-type      = string
+    deployment-version = number
+    regions            = list(string)
+    instance-count     = number
+    repo-org           = string
+    docker-tag         = string
+    reserved-only      = bool
+    prune              = bool
+    genesis-hash       = string
+    dsn-listen-port    = number
+    node-dsn-port      = number
+    operator-port      = number
+    disk-volume-size   = number
+    disk-volume-type   = string
+  })
+}
+
+variable "bootstrap-node-autoid-config" {
+  description = "Bootstrap node autoid domain deployment config"
   type = object({
     instance-type      = string
     deployment-version = number

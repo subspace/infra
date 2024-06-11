@@ -36,6 +36,23 @@ module "network" {
     disk-volume-type   = var.disk_volume_type
   }
 
+  bootstrap-node-autoid-config = {
+    instance-type      = var.instance_type
+    deployment-version = 1
+    regions            = var.aws_region
+    instance-count     = var.instance_count["autoid_bootstrap"]
+    repo-org           = "subspace"
+    docker-tag         = var.branch_name
+    reserved-only      = false
+    prune              = false
+    genesis-hash       = var.genesis_hash
+    dsn-listen-port    = 30533
+    node-dsn-port      = 30433
+    operator-port      = 30334
+    disk-volume-size   = var.disk_volume_size
+    disk-volume-type   = var.disk_volume_type
+  }
+
   node-config = {
     instance-type      = var.instance_type
     deployment-version = 1
@@ -57,7 +74,25 @@ module "network" {
     instance-count     = var.instance_count["domain"]
     repo-org           = "subspace"
     docker-tag         = var.branch_name
-    domain-prefix      = "domain"
+    domain-prefix      = ["nova", "auto"]
+    reserved-only      = false
+    prune              = false
+    node-dsn-port      = 30433
+    enable-domains     = true
+    domain-id          = var.domain_id
+    domain-labels      = var.domain_labels
+    disk-volume-size   = var.disk_volume_size
+    disk-volume-type   = var.disk_volume_type
+  }
+
+  autoid-node-config = {
+    instance-type      = var.instance_type
+    deployment-version = 1
+    regions            = var.aws_region
+    instance-count     = var.instance_count["autoid"]
+    repo-org           = "subspace"
+    docker-tag         = var.branch_name
+    domain-prefix      = ["autoid"]
     reserved-only      = false
     prune              = false
     node-dsn-port      = 30433
@@ -99,6 +134,10 @@ module "network" {
 }
 
 # External data source to run the shell command and extract the value of the operator bootnode connection parameter
-data "external" "operator_peer_multiaddr" {
+data "external" "operator_peer_evm_multiaddr" {
   program = ["bash", "-c", "echo '{\"OPERATOR_MULTI_ADDR\": \"'$(sed -nr 's/^NODE_0_OPERATOR_MULTI_ADDR=(.*)/\\1/p' ./bootstrap_node_evm_keys.txt)'\"}'"]
+}
+
+data "external" "operator_peer_autoid_multiaddr" {
+  program = ["bash", "-c", "echo '{\"OPERATOR_MULTI_ADDR\": \"'$(sed -nr 's/^NODE_0_OPERATOR_MULTI_ADDR=(.*)/\\1/p' ./bootstrap_node_autoid_keys.txt)'\"}'"]
 }
