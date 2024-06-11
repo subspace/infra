@@ -19,6 +19,11 @@ output "bootstrap-node-evm-ipv4-addresses" {
   description = "EVM Bootstrap node IPv4 Addresses"
 }
 
+output "bootstrap-node-autoid-ipv4-addresses" {
+  value       = module.devnet.bootstrap_node_autoid_public_ip
+  description = "AutoID Bootstrap node IPv4 Addresses"
+}
+
 output "rpc-node-ipv4-addresses" {
   value       = module.devnet.rpc_node_public_ip
   description = "Domain node IPv4 Addresses"
@@ -27,4 +32,9 @@ output "rpc-node-ipv4-addresses" {
 output "domain-node-ipv4-addresses" {
   value       = module.devnet.domain_node_public_ip
   description = "Domain node IPv4 Addresses"
+}
+
+output "autoid-node-ipv4-addresses" {
+  value       = module.devnet.autoid_node_public_ip
+  description = "AutoID node IPv4 Addresses"
 }

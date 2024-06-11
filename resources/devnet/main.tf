@@ -37,6 +37,23 @@ module "devnet" {
     disk-volume-type   = var.disk_volume_type
   }
 
+  bootstrap-node-autoid-config = {
+    instance-type      = var.instance_type["autoid_bootstrap"]
+    deployment-version = 1
+    regions            = var.aws_region
+    instance-count     = var.instance_count["autoid_bootstrap"]
+    docker-org         = "subspace"
+    docker-tag         = "snapshot-2024-jan-23-2"
+    reserved-only      = false
+    prune              = false
+    genesis-hash       = ""
+    dsn-listen-port    = 30533
+    node-dsn-port      = 30433
+    operator-port      = 30334
+    disk-volume-size   = var.disk_volume_size
+    disk-volume-type   = var.disk_volume_type
+  }
+
   full-node-config = {
     instance-type      = var.instance_type["full"]
     deployment-version = 0
@@ -73,7 +90,25 @@ module "devnet" {
     instance-count     = var.instance_count["domain"]
     docker-org         = "subspace"
     docker-tag         = "snapshot-2024-jan-23-2"
-    domain-prefix      = "domain"
+    domain-prefix      = ["nova"]
+    reserved-only      = false
+    prune              = false
+    node-dsn-port      = 30434
+    enable-domains     = true
+    domain-id          = var.domain_id
+    domain-labels      = var.domain_labels
+    disk-volume-size   = var.disk_volume_size
+    disk-volume-type   = var.disk_volume_type
+  }
+
+  autoid-node-config = {
+    instance-type      = var.instance_type["autoid"]
+    deployment-version = 0
+    regions            = var.aws_region
+    instance-count     = var.instance_count["autoid"]
+    docker-org         = "subspace"
+    docker-tag         = "snapshot-2024-jan-23-2"
+    domain-prefix      = ["autoid"]
     reserved-only      = false
     prune              = false
     node-dsn-port      = 30434

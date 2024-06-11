@@ -45,7 +45,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
     environment:
       NRIA_LICENSE_KEY: "\${NR_API_KEY}"
-      NRIA_DISPLAY_NAME: "\${NETWORK_NAME}-bootstrap-node-evm-\${NODE_ID}"
+      NRIA_DISPLAY_NAME: "\${NETWORK_NAME}-bootstrap-node-autoid-\${NODE_ID}"
     restart: unless-stopped
 
   dsn-bootstrap-node:
@@ -179,9 +179,9 @@ fi
 
 if [ "${enable_domains}" == "true" ]; then
     {
-    # core domain
+    # auto domain
       echo '      "--",'
-      echo '      "--domain-id", "${DOMAIN_ID_EVM}",'
+      echo '      "--domain-id", "${DOMAIN_ID_AUTO}",'
       echo '      "--state-pruning", "archive",'
       echo '      "--blocks-pruning", "archive",'
       echo '      "--listen-on", "/ip4/0.0.0.0/tcp/${OPERATOR_PORT}",'

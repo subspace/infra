@@ -36,7 +36,7 @@ variable "domain-node-config" {
     repo-org            = string
     node-tag            = string
     additional-node-ips = list(string)
-    domain-prefix       = string
+    domain-prefix       = list(string)
     reserved-only       = bool
     prune               = bool
     node-dsn-port       = number

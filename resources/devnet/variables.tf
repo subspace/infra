@@ -6,13 +6,13 @@ variable "farmer_reward_address" {
 variable "domain_id" {
   description = "Domain ID"
   type        = list(number)
-  default     = [0]
+  default     = [0, 1]
 }
 
 variable "domain_labels" {
   description = "Tag of the domain to run"
   type        = list(string)
-  default     = ["evm"]
+  default     = ["nova", "autoid"]
 }
 
 variable "instance_type" {
@@ -21,9 +21,11 @@ variable "instance_type" {
     bootstrap     = "c6a.2xlarge"
     rpc           = "m6a.xlarge"
     domain        = "m6a.xlarge"
+    autoid        = "m6a.xlarge"
     full          = "m6a.xlarge"
     farmer        = "c7i.2xlarge"
     evm_bootstrap = "m6a.xlarge"
+    autoid_bootstrap = "m6a.xlarge"
   }
 }
 
@@ -48,9 +50,11 @@ variable "instance_count" {
     bootstrap     = 2
     rpc           = 1
     domain        = 1
+    autoid        = 1
     full          = 0
     farmer        = 1
     evm_bootstrap = 1
+    autoid_bootstrap = 1
   }
 }
 
