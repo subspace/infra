@@ -36,7 +36,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
     environment:
       NRIA_LICENSE_KEY: "${NR_API_KEY}"
-      NRIA_DISPLAY_NAME: "${NETWORK_NAME}-bootstrap-node-evm-${NODE_ID}"
+      NRIA_DISPLAY_NAME: "${NETWORK_NAME}-bootstrap-node-autoid-${NODE_ID}"
     restart: unless-stopped
 
   dsn-bootstrap-node:
@@ -84,9 +84,9 @@ services:
       - "--external-address"
       - "/ip6/${EXTERNAL_IP_V6}/tcp/30533"
       - "--external-address"
-      - "/dns/bootstrap-${NODE_ID}.nova.${NETWORK_NAME}.subspace.network/udp/30533/quic-v1/p2p/${NODE_PEER_ID}"
+      - "/dns/bootstrap-${NODE_ID}.autoid.${NETWORK_NAME}.subspace.network/udp/30533/quic-v1/p2p/${NODE_PEER_ID}"
       - "--external-address"
-      - "/dns/bootstrap-${NODE_ID}.nova.${NETWORK_NAME}.subspace.network/tcp/30533/p2p/${NODE_PEER_ID}"
+      - "/dns/bootstrap-${NODE_ID}.autoid.${NETWORK_NAME}.subspace.network/tcp/30533/p2p/${NODE_PEER_ID}"
       - "--reserved-peers"
       - "/dns/bootstrap-0.${NETWORK_NAME}.subspace.network/udp/30533/quic-v1/p2p/${BOOTSTRAP_0_SUBSPACE_PEER_ID}"
       - "--bootstrap-nodes"
@@ -133,7 +133,7 @@ services:
       "--dsn-pending-in-connections", "1000",
       "--dsn-pending-out-connections", "1000",
       "--prometheus-listen-on", "0.0.0.0:9615",
-      "--dsn-external-address", "/dns/bootstrap-${NODE_ID}.nova.${NETWORK_NAME}.subspace.network/udp/30433/quic-v1/p2p/${NODE_PEER_ID}",
+      "--dsn-external-address", "/dns/bootstrap-${NODE_ID}.autoid.${NETWORK_NAME}.subspace.network/udp/30433/quic-v1/p2p/${NODE_PEER_ID}",
       "--reserved-nodes", "/dns/bootstrap-0.${NETWORK_NAME}.subspace.network/tcp/30333/p2p/${BOOTSTRAP_0_PEER_ID}",
       "--bootstrap-nodes", "/dns/bootstrap-0.${NETWORK_NAME}.subspace.network/tcp/30333/p2p/${BOOTSTRAP_0_PEER_ID}",
       "--reserved-nodes", "/dns/bootstrap-1.${NETWORK_NAME}.subspace.network/tcp/30333/p2p/${BOOTSTRAP_1_PEER_ID}",
@@ -145,13 +145,13 @@ services:
       "--",
       "--state-pruning", "archive",
       "--blocks-pruning", "archive",
-      "--domain-id", "${DOMAIN_ID_EVM}",
+      "--domain-id", "${DOMAIN_ID_AUTO}",
       "--listen-on", "/ip4/0.0.0.0/tcp/30334",
       "--rpc-cors", "all",
       "--rpc-listen-on", "0.0.0.0:8944",
       "--rpc-methods", "safe",
-      "--reserved-nodes", "/dns/bootstrap-0.nova.${NETWORK_NAME}.subspace.network/tcp/30334/p2p/${NODE_0_OPERATOR_PEER_ID}",
-      "--bootstrap-nodes", "/dns/bootstrap-0.nova.${NETWORK_NAME}.subspace.network/tcp/30334/p2p/${NODE_0_OPERATOR_PEER_ID}",
-      "--reserved-nodes", "/dns/bootstrap-1.nova.${NETWORK_NAME}.subspace.network/tcp/30334/p2p/${NODE_1_OPERATOR_PEER_ID}",
-      "--bootstrap-nodes", "/dns/bootstrap-1.nova.${NETWORK_NAME}.subspace.network/tcp/30334/p2p/${NODE_1_OPERATOR_PEER_ID}",
+      "--reserved-nodes", "/dns/bootstrap-0.autoid.${NETWORK_NAME}.subspace.network/tcp/30334/p2p/${NODE_0_OPERATOR_AUTO_PEER_ID}",
+      "--bootstrap-nodes", "/dns/bootstrap-0.autoid.${NETWORK_NAME}.subspace.network/tcp/30334/p2p/${NODE_0_OPERATOR_AUTO_PEER_ID}",
+      "--reserved-nodes", "/dns/bootstrap-1.autoid.${NETWORK_NAME}.subspace.network/tcp/30334/p2p/${NODE_1_OPERATOR_AUTO_PEER_ID}",
+      "--bootstrap-nodes", "/dns/bootstrap-1.autoid.${NETWORK_NAME}.subspace.network/tcp/30334/p2p/${NODE_1_OPERATOR_AUTO_PEER_ID}",
     ]

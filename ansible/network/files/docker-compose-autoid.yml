@@ -39,7 +39,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
     environment:
       NRIA_LICENSE_KEY: "${NR_API_KEY}"
-      NRIA_DISPLAY_NAME: "${NETWORK_NAME}-domain-node-${NODE_ID}"
+      NRIA_DISPLAY_NAME: "${NETWORK_NAME}-autoid-node-${NODE_ID}"
     restart: unless-stopped
 
   # traefik reverse proxy with automatic tls management using let encrypt
@@ -86,7 +86,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.archival-node.loadbalancer.server.port=8944"
-      - "traefik.http.routers.archival-node.rule=Host(`${DOMAIN_PREFIX_EVM}-${DOMAIN_ID_EVM}.${NETWORK_NAME}.subspace.network`) && Path(`/ws`)"
+      - "traefik.http.routers.archival-node.rule=Host(`${DOMAIN_PREFIX_AUTO}-${DOMAIN_ID_AUTO}.${NETWORK_NAME}.subspace.network`) && Path(`/ws`)"
       - "traefik.http.routers.archival-node.tls=true"
       - "traefik.http.routers.archival-node.tls.certresolver=le"
       - "traefik.http.routers.archival-node.entrypoints=websecure"
@@ -130,14 +130,14 @@ services:
       "--",
       "--state-pruning", "archive",
       "--blocks-pruning", "archive",
-      "--domain-id", "${DOMAIN_ID_EVM}",
+      "--domain-id", "${DOMAIN_ID_AUTO}",
       "--listen-on", "/ip4/0.0.0.0/tcp/30334",
       "--rpc-cors", "all",
       "--rpc-listen-on", "0.0.0.0:8944",
       "--rpc-methods", "safe",
       "--operator-id", "0",
-      "--reserved-nodes", "/dns/bootstrap-0.nova.${NETWORK_NAME}.subspace.network/tcp/30334/p2p/${NODE_0_OPERATOR_PEER_ID}",
-      "--bootstrap-nodes", "/dns/bootstrap-0.nova.${NETWORK_NAME}.subspace.network/tcp/30334/p2p/${NODE_0_OPERATOR_PEER_ID}",
-      "--reserved-nodes", "/dns/bootstrap-1.nova.${NETWORK_NAME}.subspace.network/tcp/30334/p2p/${NODE_1_OPERATOR_PEER_ID}",
-      "--bootstrap-nodes", "/dns/bootstrap-1.nova.${NETWORK_NAME}.subspace.network/tcp/30334/p2p/${NODE_1_OPERATOR_PEER_ID}",
+      "--reserved-nodes", "/dns/bootstrap-0.autoid.${NETWORK_NAME}.subspace.network/tcp/30334/p2p/${NODE_0_OPERATOR_AUTO_PEER_ID}",
+      "--bootstrap-nodes", "/dns/bootstrap-0.autoid.${NETWORK_NAME}.subspace.network/tcp/30334/p2p/${NODE_0_OPERATOR_AUTO_PEER_ID}",
+      "--reserved-nodes", "/dns/bootstrap-1.autoid.${NETWORK_NAME}.subspace.network/tcp/30334/p2p/${NODE_1_OPERATOR_AUTO_PEER_ID}",
+      "--bootstrap-nodes", "/dns/bootstrap-1.autoid.${NETWORK_NAME}.subspace.network/tcp/30334/p2p/${NODE_1_OPERATOR_AUTO_PEER_ID}",
     ]
