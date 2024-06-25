@@ -1,0 +1,27 @@
+matcherConfig:
+  exactMatch: false
+  labelMatchers:
+    - [ self-hosted, linux, x64, amazon ]
+  priority: 1 # set ephemeral runner priority to 1
+fifo: true
+runner_config:
+  runner_os: linux
+  runner_architecture: x64
+  runner_name_prefix: amazon-x64_
+  enable_ssm_on_runners: true
+  vpc_id: ${vpc_id}
+  subnet_ids: ${subnet_ids}
+  instance_types:
+    - m5ad.large
+    - m5a.large
+  runners_maximum_count: 1
+  enable_ephemeral_runners: true
+  enable_on_demand_failover_for_errors: ['InsufficientInstanceCapacity']
+  create_service_linked_role_spot: true
+  delay_webhook_event: 0
+  scale_down_schedule_expression: cron(* * * * ? *)
+  runner_metadata_options:
+    instance_metadata_tags: disabled
+    http_endpoint: enabled
+    http_tokens: optional
+    http_put_response_hop_limit: 1

@@ -1,0 +1,20 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["sqs:SendMessage", "sqs:GetQueueAttributes"],
+      "Resource": ${sqs_resource_arns}
+      %{ if kms_key_arn != "" ~}
+    },
+    {
+        "Effect": "Allow",
+        "Action": [
+            "kms:Decrypt",
+            "kms:GenerateDataKey"
+        ],
+        "Resource": "${kms_key_arn}"
+    %{ endif ~}
+    }
+  ]
+}
