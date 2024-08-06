@@ -1,0 +1,101 @@
+name: Template Deploy Ephemeral
+
+on:
+  workflow_call:
+    inputs:
+      project:
+        required: true
+        type: string
+      branch:
+        required: true
+        type: string
+      genesis_hash:
+        required: true
+        type: string
+      instance:
+        required: true
+        type: string
+        default: "ec2"
+      resource:
+        required: true
+        type: string
+      tf_workspace_name:
+        description: "Name of the workspace in terraform cloud"
+        required: false
+        type: string
+      tf_version:
+        description: "Version of the terraform"
+        required: true
+        type: string
+      tf_organization:
+        description: "Name of the TF organization"
+        default: "subspace"
+        type: string
+        required: true
+      run_apply:
+        description: "The code needs to be deployed or not"
+        type: string
+        default: "no"
+      run_destroy:
+        description: "The resources need to be destroyed or not"
+        type: string
+        default: "no"
+    secrets:
+      TRANSCRYPT:
+        required: true
+      TF_API_TOKEN:
+        required: false
+env:
+  TF_CLOUD_ORGANIZATION: "${{ inputs.tf_organization }}"
+  TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
+  TF_VERSION: "${{ inputs.tf_version }}"
+
+jobs:
+  template-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v3
+
+      - name: Decrypt the secrets
+        run: |
+          bash scripts/transcrypt -c aes-256-cbc -p ${{ secrets.TRANSCRYPT }} -y
+
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+          terraform_wrapper: false
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Terraform fmt
+        working-directory: ${{ inputs.project }}/${{ inputs.instance }}/${{ inputs.resource }}
+        run: terraform fmt -check
+        continue-on-error: true
+
+      - name: Terraform Init for ${{ inputs.project }}/${{ inputs.instance }}/${{ inputs.resource }}
+        working-directory: ${{ inputs.project }}/${{ inputs.instance }}/${{ inputs.resource }}
+        run: |
+          terraform init
+
+      - name: Terraform Validate
+        working-directory: ${{ inputs.project }}/${{ inputs.instance }}/${{ inputs.resource }}
+        run: terraform validate
+
+      - name: Terraform Plan for ${{ inputs.project }}/${{ inputs.instance }}/${{ inputs.resource }}
+        if: ${{ (inputs.run_destroy == 'no') }}
+        working-directory: ${{ inputs.project }}/${{ inputs.instance }}/${{ inputs.resource }}
+        run: |
+          terraform plan -var-file=terraform.tfvars -var "branch_name=${{ inputs.branch }}" -var "genesis_hash=${{ inputs.genesis_hash }}"
+
+      - name: Terraform Apply for ${{ inputs.project }}/${{ inputs.instance }}/${{ inputs.resource }}
+        if: ${{ (inputs.run_apply == 'yes') && (inputs.run_destroy == 'no') }}
+        working-directory: ${{ inputs.project }}/${{ inputs.instance }}/${{ inputs.resource }}
+        run: |
+          terraform apply -auto-approve -var-file=terraform.tfvars -var "branch_name=${{ inputs.branch }}" -var "genesis_hash=${{ inputs.genesis_hash }}"
+
+      - name: Terraform Destroy for ${{ inputs.project }}/${{ inputs.instance }}/${{ inputs.resource }}
+        if: ${{ (inputs.run_destroy == 'yes') }}
+        working-directory: ${{ inputs.project }}/${{ inputs.instance }}/${{ inputs.resource }}
+        run: |
+          terraform plan -destroy -var-file=terraform.tfvars
+          terraform destroy -auto-approve -var-file=terraform.tfvars

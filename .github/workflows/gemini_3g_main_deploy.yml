@@ -1,0 +1,29 @@
+name: Main CD for Gemini Deployment
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - "!main"
+    paths:
+      - "aws/gemini-3g/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/terraform_template_deploy.yml
+    with:
+      project: aws
+      resource: gemini-3g
+      tf_workspace_name: gemini-3g
+      tf_version: 1.5.7
+      tf_organization: subspace
+    secrets:
+      TRANSCRYPT: ${{ secrets.TRANSCRYPT }}
+      TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
