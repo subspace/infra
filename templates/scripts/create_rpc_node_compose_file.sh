@@ -84,10 +84,14 @@ services:
       - "traefik.http.routers.archival-node.tls=true"
       - "traefik.http.routers.archival-node.tls.certresolver=le"
       - "traefik.http.routers.archival-node.entrypoints=websecure"
-      - "traefik.http.routers.archival-node.middlewares=redirect-https"
+      - "traefik.http.routers.archival-node.middlewares=redirect-https,rate-limit"
       - "traefik.http.middlewares.redirect-https.redirectscheme.scheme=https"
       - "traefik.http.middlewares.redirect-https.redirectscheme.permanent=true"
       - "traefik.docker.network=traefik-proxy"
+      # Rate limiting configuration
+      - "traefik.http.middlewares.rate-limit.ratelimit.average=200"
+      - "traefik.http.middlewares.rate-limit.ratelimit.burst=300"
+      - "traefik.http.middlewares.rate-limit.ratelimit.period=1s"
     ports:
       - "9615:9615"
     networks:
@@ -113,7 +117,7 @@ services:
       "--node-key", "\${NODE_KEY}",
       "--in-peers", "500",
       "--out-peers", "250",
-      "--rpc-max-connections", "15000",
+      "--rpc-max-connections", "20000",
       "--rpc-cors", "all",
       "--rpc-listen-on", "0.0.0.0:9944",
       "--rpc-methods", "safe",

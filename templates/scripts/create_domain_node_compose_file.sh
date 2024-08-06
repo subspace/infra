@@ -93,10 +93,14 @@ services:
       - "traefik.http.routers.archival-node.tls=true"
       - "traefik.http.routers.archival-node.tls.certresolver=le"
       - "traefik.http.routers.archival-node.entrypoints=websecure"
-      - "traefik.http.routers.archival-node.middlewares=redirect-https"
+      - "traefik.http.routers.archival-node.middlewares=redirect-https,rate-limit"
       - "traefik.http.middlewares.redirect-https.redirectscheme.scheme=https"
       - "traefik.http.middlewares.redirect-https.redirectscheme.permanent=true"
       - "traefik.docker.network=traefik-proxy"
+      # Rate limiting configuration
+      - "traefik.http.middlewares.rate-limit.ratelimit.average=200"
+      - "traefik.http.middlewares.rate-limit.ratelimit.burst=300"
+      - "traefik.http.middlewares.rate-limit.ratelimit.period=1s"
     networks:
       - traefik-proxy
     logging:
@@ -116,7 +120,7 @@ services:
       "--node-key", "\${NODE_KEY}",
       "--in-peers", "500",
       "--out-peers", "250",
-      "--rpc-max-connections", "15000",
+      "--rpc-max-connections", "10000",
       "--rpc-cors", "all",
       "--rpc-listen-on", "0.0.0.0:9944",
       "--rpc-methods", "safe",
@@ -168,6 +172,7 @@ if [ "${enable_domains}" == "true" ]; then
     echo '      "--rpc-cors", "all",'
     echo '      "--rpc-methods", "safe",'
     echo '      "--rpc-listen-on", "0.0.0.0:8944",'
+    echo '      "--rpc-max-connections", "10000",'
 
     for (( i = 0; i < bootstrap_node_evm_count; i++ )); do
       addr=$(sed -nr "s/NODE_${i}_MULTI_ADDR_TCP=//p" ~/subspace/bootstrap_node_evm_keys.txt)

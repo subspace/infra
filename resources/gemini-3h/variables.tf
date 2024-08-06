@@ -26,9 +26,9 @@ variable "domain_labels" {
 variable "instance_type" {
   type = map(string)
   default = {
-    bootstrap     = "c7a.4xlarge"
-    rpc           = "m6a.xlarge"
-    domain        = "m6a.xlarge"
+    bootstrap     = "c7a.2xlarge"
+    rpc           = "m7a.xlarge"
+    domain        = "m7a.xlarge"
     rpc-squid     = "c7a.2xlarge"
     nova-squid    = "c7a.2xlarge"
     farmer        = "c7a.2xlarge"

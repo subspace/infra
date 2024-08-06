@@ -136,6 +136,7 @@ services:
       "--rpc-cors", "all",
       "--rpc-listen-on", "0.0.0.0:8944",
       "--rpc-methods", "safe",
+      "--rpc-max-connections", "10000",
       "--operator-id", "0",
       "--reserved-nodes", "/dns/bootstrap-0.nova.${NETWORK_NAME}.subspace.network/tcp/30334/p2p/${NODE_0_OPERATOR_PEER_ID}",
       "--bootstrap-nodes", "/dns/bootstrap-0.nova.${NETWORK_NAME}.subspace.network/tcp/30334/p2p/${NODE_0_OPERATOR_PEER_ID}",
