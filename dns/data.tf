@@ -22,3 +22,13 @@ data "cloudflare_zone" "continuum_co" {
 data "cloudflare_zone" "autonomys_net" {
   name = "autonomys.net"
 }
+
+// ## autonomys.xyz zone ##
+data "cloudflare_zone" "autonomys_xyz" {
+  name = "autonomys.xyz"
+}
+
+// ## subspace.foundation zone ##
+data "cloudflare_zone" "subspace_foundation" {
+  name = "subspace.foundation"
+}
