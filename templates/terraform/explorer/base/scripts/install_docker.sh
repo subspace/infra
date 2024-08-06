@@ -23,3 +23,11 @@ fi
 
 sudo sysctl -p /etc/sysctl.conf
 sudo docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions
+
+# install ufw-docker
+sudo wget -O /usr/local/bin/ufw-docker \
+https://github.com/chaifeng/ufw-docker/raw/master/ufw-docker
+sudo chmod +x /usr/local/bin/ufw-docker
+sudo ufw enable
+sudo ufw-docker install
+sudo systemctl restart ufw
