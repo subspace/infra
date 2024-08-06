@@ -45,7 +45,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
     environment:
       NRIA_LICENSE_KEY: "\${NR_API_KEY}"
-      NRIA_DISPLAY_NAME: "\${NETWORK_NAME}-bootstrap-node-evm-\${NODE_ID}"
+      NRIA_DISPLAY_NAME: "\${NETWORK_NAME}-bootstrap-node-autoid-\${NODE_ID}"
     restart: unless-stopped
 
   dsn-bootstrap-node:
@@ -136,7 +136,6 @@ cat >> ~/subspace/docker-compose.yml << EOF
       "--base-path", "/var/subspace",
       "--state-pruning", "archive",
       "--blocks-pruning", "256",
-      "--sync", "full",
       "--pot-external-entropy", "\${POT_EXTERNAL_ENTROPY}",
       "--listen-on", "/ip4/0.0.0.0/tcp/30333",
       "--listen-on", "/ip6/::/tcp/30333",
@@ -146,12 +145,12 @@ cat >> ~/subspace/docker-compose.yml << EOF
 #      "--dsn-external-address", "/ip6/$EXTERNAL_IP_V6/udp/30433/quic-v1",
 #      "--dsn-external-address", "/ip6/$EXTERNAL_IP_V6/tcp/30433",
       "--node-key", "\${NODE_KEY}",
-      "--in-peers", "2000",
-      "--out-peers", "2000",
-      "--dsn-in-connections", "2000",
-      "--dsn-out-connections", "2000",
-      "--dsn-pending-in-connections", "2000",
-      "--dsn-pending-out-connections", "2000",
+      "--in-peers", "1000",
+      "--out-peers", "1000",
+      "--dsn-in-connections", "1000",
+      "--dsn-out-connections", "1000",
+      "--dsn-pending-in-connections", "1000",
+      "--dsn-pending-out-connections", "1000",
       "--prometheus-listen-on", "0.0.0.0:9615",
 EOF
 
@@ -180,9 +179,9 @@ fi
 
 if [ "${enable_domains}" == "true" ]; then
     {
-    # core domain
+    # auto domain
       echo '      "--",'
-      echo '      "--domain-id", "${DOMAIN_ID_EVM}",'
+      echo '      "--domain-id", "${DOMAIN_ID_AUTO}",'
       echo '      "--state-pruning", "archive",'
       echo '      "--blocks-pruning", "archive",'
       echo '      "--listen-on", "/ip4/0.0.0.0/tcp/${OPERATOR_PORT}",'

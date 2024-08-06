@@ -13,14 +13,14 @@ variable "farmer_reward_address" {
 variable "domain_id" {
   description = "Domain ID"
   type        = list(number)
-  default     = [0]
+  default     = [0, 1]
 }
 
 //todo change this to a map
 variable "domain_labels" {
   description = "Tag of the domain to run"
   type        = list(string)
-  default     = ["evm"]
+  default     = ["nova, "autoid"]
 }
 
 variable "instance_type" {
@@ -33,6 +33,7 @@ variable "instance_type" {
     nova-squid    = "c7a.2xlarge"
     farmer        = "c7a.2xlarge"
     evm_bootstrap = "c7a.xlarge"
+    autoid_bootstrap = "c7a.xlarge"
   }
 }
 
@@ -57,6 +58,7 @@ variable "instance_count" {
     bootstrap     = 2
     rpc           = 2
     domain        = 2
+    autoid        = 2
     rpc-squid     = 1
     nova-squid    = 1
     farmer        = 0
