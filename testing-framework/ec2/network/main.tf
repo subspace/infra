@@ -8,7 +8,7 @@ module "network" {
     deployment-version = 1
     regions            = var.aws_region
     instance-count     = var.instance_count["bootstrap"]
-    repo-org           = "subspace"
+    repo-org           = "autonomys"
     docker-tag         = var.branch_name
     reserved-only      = false
     prune              = false
@@ -24,7 +24,7 @@ module "network" {
     deployment-version = 1
     regions            = var.aws_region
     instance-count     = var.instance_count["evm_bootstrap"]
-    repo-org           = "subspace"
+    repo-org           = "autonomys"
     docker-tag         = var.branch_name
     reserved-only      = false
     prune              = false
@@ -41,7 +41,7 @@ module "network" {
     deployment-version = 1
     regions            = var.aws_region
     instance-count     = var.instance_count["autoid_bootstrap"]
-    repo-org           = "subspace"
+    repo-org           = "autonomys"
     docker-tag         = var.branch_name
     reserved-only      = false
     prune              = false
@@ -58,7 +58,7 @@ module "network" {
     deployment-version = 1
     regions            = var.aws_region
     instance-count     = var.instance_count["node"]
-    repo-org           = "subspace"
+    repo-org           = "autonomys"
     docker-tag         = var.branch_name
     reserved-only      = false
     prune              = false
@@ -72,7 +72,7 @@ module "network" {
     deployment-version = 1
     regions            = var.aws_region
     instance-count     = var.instance_count["domain"]
-    repo-org           = "subspace"
+    repo-org           = "autonomys"
     docker-tag         = var.branch_name
     domain-prefix      = ["nova", "auto"]
     reserved-only      = false
@@ -90,7 +90,7 @@ module "network" {
     deployment-version = 1
     regions            = var.aws_region
     instance-count     = var.instance_count["autoid"]
-    repo-org           = "subspace"
+    repo-org           = "autonomys"
     docker-tag         = var.branch_name
     domain-prefix      = ["autoid"]
     reserved-only      = false
@@ -108,7 +108,7 @@ module "network" {
     deployment-version     = 1
     regions                = var.aws_region
     instance-count         = var.instance_count["farmer"]
-    repo-org               = "subspace"
+    repo-org               = "autonomys"
     docker-tag             = var.branch_name
     reserved-only          = false
     prune                  = false

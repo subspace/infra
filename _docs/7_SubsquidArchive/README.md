@@ -20,9 +20,9 @@ touch docker-compose.yml
 
 Sample [docker-compose.yml](docker-compose.yml) can be used as a reference. It will require running a local Subspace node to read data from as well as Subsquid-specific services (DB, ingest, gateway and explorer)
 
-> Make sure you provide: 
+> Make sure you provide:
 > - volume name for DB and node data
-> - node snapshot release (for example `gemini-2a-2022-oct-06`, latest release can be found [here](https://github.com/subspace/subspace/pkgs/container/node))
+> - node snapshot release (for example `gemini-2a-2022-oct-06`, latest release can be found [here](https://github.com/autonomys/subspace/pkgs/container/node))
 > - chain (for example `gemini-2a`)
 > - node name (in order to find your node on [Subspace Telemetry](https://telemetry.subspace.network/))
 

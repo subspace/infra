@@ -44,7 +44,7 @@ spec:
         effect: "NoSchedule"
       containers:
       - name: dsn-bootstrap-node
-        image: ghcr.io/subspace/bootstrap-node:${DOCKER_TAG}
+        image: ghcr.io/autonomys/bootstrap-node:${DOCKER_TAG}
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
@@ -162,7 +162,7 @@ spec:
           - "/dns/bootstrap-1.${NETWORK_NAME}.subspace.network/udp/30533/quic-v1/p2p/${BOOTSTRAP_1_SUBSPACE_PEER_ID}"
 
       - name: bootstrap-domain-node
-        image: ghcr.io/subspace/node:${DOCKER_TAG}
+        image: ghcr.io/autonomys/node:${DOCKER_TAG}
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true

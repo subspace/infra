@@ -28,7 +28,7 @@ resource "null_resource" "setup-blockscout-node" {
   # clone and checkout blockscout repository
   provisioner "remote-exec" {
     inline = [
-      "git clone https://github.com/subspace/blockscout-backend.git",
+      "git clone https://github.com/autonomys/blockscout-backend.git",
       "cd blockscout-backend",
       #"git checkout gemini-3h-blockscout",
     ]

@@ -12,8 +12,8 @@ locals {
 
   tags = {
     project      = local.name
-    GithubRepo   = "github.com/subspace/infra"
-    GithubOrg    = "subspace"
+    GithubRepo   = "github.com/autonomys/infra"
+    GithubOrg    = "autonomys"
     GithubBranch = "main"
     environment  = var.environment_name
   }

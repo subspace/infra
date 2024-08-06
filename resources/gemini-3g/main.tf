@@ -8,7 +8,7 @@ module "gemini-3g" {
     deployment-version = 0
     regions            = var.aws_region
     instance-count     = var.instance_count["bootstrap"]
-    docker-org         = "subspace"
+    docker-org         = "autonomys"
     docker-tag         = "gemini-3g-2024-jan-29"
     reserved-only      = true
     prune              = false
@@ -24,7 +24,7 @@ module "gemini-3g" {
     deployment-version = 0
     regions            = var.aws_region
     instance-count     = var.instance_count["evm_bootstrap"]
-    docker-org         = "subspace"
+    docker-org         = "autonomys"
     docker-tag         = "gemini-3g-2024-jan-29"
     reserved-only      = false
     prune              = false
@@ -41,7 +41,7 @@ module "gemini-3g" {
     deployment-version = 0
     regions            = var.aws_region
     instance-count     = var.instance_count["full"]
-    docker-org         = "subspace"
+    docker-org         = "autonomys"
     docker-tag         = "gemini-3g-2024-jan-29"
     reserved-only      = true
     prune              = false
@@ -55,7 +55,7 @@ module "gemini-3g" {
     deployment-version = 0
     regions            = var.aws_region
     instance-count     = var.instance_count["rpc"]
-    docker-org         = "subspace"
+    docker-org         = "autonomys"
     docker-tag         = "gemini-3g-2024-jan-29"
     domain-prefix      = "rpc"
     reserved-only      = true
@@ -70,7 +70,7 @@ module "gemini-3g" {
     deployment-version = 0
     regions            = var.aws_region
     instance-count     = var.instance_count["domain"]
-    docker-org         = "subspace"
+    docker-org         = "autonomys"
     docker-tag         = "gemini-3g-2024-jan-29"
     domain-prefix      = "nova"
     reserved-only      = true
@@ -88,7 +88,7 @@ module "gemini-3g" {
     deployment-version     = 0
     regions                = var.aws_region
     instance-count         = var.instance_count["farmer"]
-    docker-org             = "subspace"
+    docker-org             = "autonomys"
     docker-tag             = "gemini-3g-2024-jan-29"
     reserved-only          = true
     prune                  = false

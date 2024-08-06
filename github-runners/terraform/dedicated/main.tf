@@ -55,7 +55,7 @@ resource "aws_instance" "linux_x86_64_runner" {
       "tar xzf ./actions-runner-linux-x64-${var.gh_runner_version}.tar.gz",
       # configure runner
       "echo 'ACTIONS_RUNNER_HOOK_JOB_COMPLETED=/home/${var.ssh_user[0]}/cleanup_script.sh' > .env",
-      "./config.sh --url https://github.com/subspace --token ${var.gh_token} --unattended --name ubuntu-20.04-x86-64 --labels 'self-hosted,ubuntu-20.04-x86-64,Linux,x86-64' --work _work --runasservice",
+      "./config.sh --url https://github.com/autonomys --token ${var.gh_token} --unattended --name ubuntu-20.04-x86-64 --labels 'self-hosted,ubuntu-20.04-x86-64,Linux,x86-64' --work _work --runasservice",
       "sudo ./svc.sh install ${var.ssh_user[0]}",
       "sudo ./svc.sh start",
       # install monitoring
@@ -134,7 +134,7 @@ resource "aws_instance" "linux_arm64_runner" {
       "tar xzf ./actions-runner-linux-arm64-${var.gh_runner_version}.tar.gz",
       # configure runner
       "echo 'ACTIONS_RUNNER_HOOK_JOB_COMPLETED=/home/${var.ssh_user[0]}/cleanup_script.sh' > .env",
-      "./config.sh --url https://github.com/subspace --token ${var.gh_token} --unattended --name ubuntu-20.04-arm64 --labels 'self-hosted,ubuntu-20.04-arm64,Linux,arm64' --work _work --runasservice",
+      "./config.sh --url https://github.com/autonomys --token ${var.gh_token} --unattended --name ubuntu-20.04-arm64 --labels 'self-hosted,ubuntu-20.04-arm64,Linux,arm64' --work _work --runasservice",
       "sudo ./svc.sh install ${var.ssh_user[0]}",
       "sudo ./svc.sh start",
       # install monitoring
@@ -205,7 +205,7 @@ resource "aws_instance" "mac_x86_64_runner" {
       "echo '${lookup(var.gh_runner_checksums, "mac_x86_64", "")} actions-runner-osx-x64-${var.gh_runner_version}.tar.gz' | shasum -a 256 -c",
       "tar xzf ./actions-runner-osx-x64-${var.gh_runner_version}.tar.gz",
       "echo 'ACTIONS_RUNNER_HOOK_JOB_COMPLETED=/home/${var.ssh_user[1]}/cleanup_script.sh' > .env",
-      "./config.sh --url https://github.com/subspace --token ${var.gh_token} --unattended --name macos-12-x86-64 --labels 'self-hosted,macos-12-x86-64,macOS,x86-64' --work _work --runasservice",
+      "./config.sh --url https://github.com/autonomys --token ${var.gh_token} --unattended --name macos-12-x86-64 --labels 'self-hosted,macos-12-x86-64,macOS,x86-64' --work _work --runasservice",
       "sudo su -- ${var.ssh_user[1]} ./svc.sh install",
       "sudo su -- ${var.ssh_user[1]} ./runsvc.sh start &",
       # install monitoring
@@ -283,7 +283,7 @@ resource "aws_instance" "mac_arm64_runner" {
       "echo '${lookup(var.gh_runner_checksums, "mac_arm64", "")}  actions-runner-osx-arm64-${var.gh_runner_version}.tar.gz' | shasum -a 256 -c",
       "tar xzf ./actions-runner-osx-arm64-${var.gh_runner_version}.tar.gz",
       "echo 'ACTIONS_RUNNER_HOOK_JOB_COMPLETED=/home/${var.ssh_user[1]}/cleanup_script.sh' > .env",
-      "./config.sh --url https://github.com/subspace --token ${var.gh_token} --unattended --name macos-12-arm64 --labels 'self-hosted,macos-12-arm64,macOS,arm64' --work _work --runasservice",
+      "./config.sh --url https://github.com/autonomys --token ${var.gh_token} --unattended --name macos-12-arm64 --labels 'self-hosted,macos-12-arm64,macOS,arm64' --work _work --runasservice",
       "sudo su -- ${var.ssh_user[1]} ./svc.sh install",
       "sudo su -- ${var.ssh_user[1]} ./runsvc.sh start &",
       # install monitoring

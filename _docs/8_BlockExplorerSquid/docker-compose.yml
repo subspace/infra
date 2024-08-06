@@ -17,7 +17,7 @@ services:
     command: postgres -c config_file=/VOLUME_NAME/postgresql/postgresql.conf
 
   run-migrations:
-    image: ghcr.io/subspace/blockexplorer-processor:latest
+    image: ghcr.io/autonomys/blockexplorer-processor:latest
     restart: on-failure:5
     environment:
       DB_HOST: "db"
@@ -30,11 +30,11 @@ services:
     command: "npm run db:migrate"
 
   processor:
-    image: ghcr.io/subspace/blockexplorer-processor:latest
+    image: ghcr.io/autonomys/blockexplorer-processor:latest
     restart: on-failure
     environment:
       # provide archive endpoint
-      ARCHIVE_ENDPOINT: 
+      ARCHIVE_ENDPOINT:
       # provide chain RPC endpoint
       CHAIN_RPC_ENDPOINT:
       DB_HOST: "db"
@@ -49,7 +49,7 @@ services:
       - "3000:3000"
 
   graphql:
-    image: ghcr.io/subspace/blockexplorer-api-server:latest
+    image: ghcr.io/autonomys/blockexplorer-api-server:latest
     depends_on:
       - db
       - run-migrations
@@ -78,7 +78,7 @@ services:
      - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
 
   pg-health-check:
-    image: ghcr.io/subspace/health-check:latest
+    image: ghcr.io/autonomys/health-check:latest
     environment:
       POSTGRES_HOST: db
       POSTGRES_PORT: 5432
@@ -88,9 +88,9 @@ services:
     command: "postgres"
     ports:
       - 8080:8080
-  
+
   prom-health-check:
-    image: ghcr.io/subspace/health-check:latest
+    image: ghcr.io/autonomys/health-check:latest
     environment:
       PROMETHEUS_HOST: http://processor:3000
       PORT: 7070

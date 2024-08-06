@@ -6,7 +6,7 @@ module "network" {
   bootstrap-node-config = {
     deployment-version  = 1
     instance-count      = var.instance_count["bootstrap"]
-    repo-org            = "subspace"
+    repo-org            = "autonomys"
     node-tag            = "bootstrap-node"
     additional-node-ips = var.additional_node_ips["bootstrap"]
     reserved-only       = true
@@ -19,7 +19,7 @@ module "network" {
   bootstrap-node-evm-config = {
     deployment-version  = 1
     instance-count      = var.instance_count["bootstrap"]
-    repo-org            = "subspace"
+    repo-org            = "autonomys"
     node-tag            = "bootstrap-node"
     additional-node-ips = var.additional_node_ips["bootstrap"]
     reserved-only       = true
@@ -33,7 +33,7 @@ module "network" {
   node-config = {
     deployment-version  = 1
     instance-count      = var.instance_count["node"]
-    repo-org            = "subspace"
+    repo-org            = "autonomys"
     node-tag            = "subspace-node"
     additional-node-ips = var.additional_node_ips["node"]
     reserved-only       = true
@@ -44,7 +44,7 @@ module "network" {
   domain-node-config = {
     deployment-version  = 1
     instance-count      = var.instance_count["domain"]
-    repo-org            = "subspace"
+    repo-org            = "autonomys"
     node-tag            = "subspace-node"
     additional-node-ips = var.additional_node_ips["domain"]
     domain-prefix       = "domain"
@@ -59,7 +59,7 @@ module "network" {
   farmer-node-config = {
     deployment-version     = 1
     instance-count         = var.instance_count["farmer"]
-    repo-org               = "subspace"
+    repo-org               = "autonomys"
     node-tag               = "farmer-node"
     additional-node-ips    = var.additional_node_ips["farmer"]
     reserved-only          = true

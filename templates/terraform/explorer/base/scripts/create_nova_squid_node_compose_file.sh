@@ -29,7 +29,7 @@ services:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
   run-migrations:
-    image: ghcr.io/subspace/blockexplorer-processor:\${DOCKER_TAG}
+    image: ghcr.io/autonomys/blockexplorer-processor:\${DOCKER_TAG}
     restart: on-failure:5
     environment:
       DB_HOST: \${DB_HOST}
@@ -42,7 +42,7 @@ services:
     command: "npm run db:migrate"
 
   processor:
-    image: ghcr.io/subspace/blockexplorer-processor:\${DOCKER_TAG}
+    image: ghcr.io/autonomys/blockexplorer-processor:\${DOCKER_TAG}
     restart: on-failure
     environment:
       # provide archive endpoint
@@ -65,7 +65,7 @@ services:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
   graphql:
-    image: ghcr.io/subspace/blockexplorer-api-server:\${DOCKER_TAG}
+    image: ghcr.io/autonomys/blockexplorer-api-server:\${DOCKER_TAG}
     depends_on:
       - db
       - run-migrations
@@ -124,7 +124,7 @@ services:
     restart: unless-stopped
 
   pg-health-check:
-    image: ghcr.io/subspace/health-check:latest
+    image: ghcr.io/autonomys/health-check:latest
     environment:
       POSTGRES_HOST: \${POSTGRES_HOST}
       POSTGRES_PORT: \${POSTGRES_PORT}
@@ -135,7 +135,7 @@ services:
       - 9080:8080
 
   prom-health-check:
-    image: ghcr.io/subspace/health-check:latest
+    image: ghcr.io/autonomys/health-check:latest
     environment:
       PROMETHEUS_HOST: \${PROCESSOR_HEALTH_HOST}
       PORT: \${PROCESSOR_HEALTH_PORT}

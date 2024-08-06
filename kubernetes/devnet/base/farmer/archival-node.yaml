@@ -44,7 +44,7 @@ spec:
         effect: "NoSchedule"
       containers:
       - name: archival-node
-        image: ghcr.io/subspace/node:${DOCKER_TAG}
+        image: ghcr.io/autonomys/node:${DOCKER_TAG}
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
@@ -116,7 +116,7 @@ spec:
           - "/dns/bootstrap-1.$(NETWORK_NAME).subspace.network/tcp/30333/p2p/$(BOOTSTRAP_1_PEER_ID)"
 
       - name: farmer-node
-        image: ghcr.io/subspace/farmer:${DOCKER_TAG}
+        image: ghcr.io/autonomys/farmer:${DOCKER_TAG}
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true

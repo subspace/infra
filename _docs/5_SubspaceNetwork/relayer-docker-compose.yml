@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   relayer:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /path/to/config:/config:ro
       - /path/to/archives:/archives:ro

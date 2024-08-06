@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   bootstrap-node:
-    image: ghcr.io/subspace/node:snapshot-DATE
+    image: ghcr.io/autonomys/node:snapshot-DATE
     volumes:
       - /path/to/bootstrap-node:/var/subspace:rw
     ports:
@@ -22,7 +22,7 @@ services:
     ]
 
   public-rpc-node:
-    image: ghcr.io/subspace/node:snapshot-DATE
+    image: ghcr.io/autonomys/node:snapshot-DATE
     volumes:
       - /path/to/public-rpc-node:/var/subspace:rw
     ports:
@@ -43,7 +43,7 @@ services:
     ]
 
   farmer:
-    image: ghcr.io/subspace/farmer:snapshot-DATE
+    image: ghcr.io/autonomys/farmer:snapshot-DATE
     ports:
       - "127.0.0.1:9955:9955"
     volumes:

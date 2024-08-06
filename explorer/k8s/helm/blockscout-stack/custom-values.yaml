@@ -43,7 +43,7 @@ blockscout:
   ## Image parametes
   ##
   image:
-    repository: ghcr.io/subspace/blockscout-backend:subspace
+    repository: ghcr.io/autonomys/blockscout-backend:subspace
     pullPolicy: IfNotPresent
     tag: "latest"
   ## Init container configuration (used to run DB migrations)

@@ -18,7 +18,7 @@ services:
     depends_on:
       - db
     restart: on-failure
-    image: ghcr.io/subspace/substrate-ingest:latest
+    image: ghcr.io/autonomys/substrate-ingest:latest
     command: [
       "-e", "ws://node:9944",
       "-c", "10",
@@ -61,7 +61,7 @@ services:
       - "4444:3000"
 
   node:
-    image: ghcr.io/subspace/node:gemini-3f-2023-aug-17
+    image: ghcr.io/autonomys/node:gemini-3f-2023-aug-17
     volumes:
       - archival_node_data:/var/subspace:rw
     restart: unless-stopped
@@ -98,7 +98,7 @@ services:
      - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
 
   pg-health-check:
-    image: ghcr.io/subspace/health-check:latest
+    image: ghcr.io/autonomys/health-check:latest
     environment:
       POSTGRES_HOST: db
       POSTGRES_PORT: 5432
@@ -109,7 +109,7 @@ services:
       - 8080:8080
 
   prom-health-check:
-    image: ghcr.io/subspace/health-check:latest
+    image: ghcr.io/autonomys/health-check:latest
     environment:
       PROMETHEUS_HOST: http://ingest:9091
       PORT: 7070

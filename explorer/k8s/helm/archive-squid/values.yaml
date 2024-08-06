@@ -20,13 +20,13 @@ image:
   tag: "firesquid"
 
 image_ingest:
-  repository: ghcr.io/subspace/substrate-ingest
+  repository: ghcr.io/autonomys/substrate-ingest
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 
 image_node:
-  repository: ghcr.io/subspace/node
+  repository: ghcr.io/autonomys/node
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "snapshot-DATE"

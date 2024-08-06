@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   polkadot:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/polkadot-archives/polkadot:/archive
     restart: unless-stopped
@@ -13,7 +13,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   statemint:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/polkadot-archives/statemint:/archive
     restart: unless-stopped
@@ -24,7 +24,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   acala:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/polkadot-archives/acala:/archive
     restart: unless-stopped
@@ -35,7 +35,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   astar:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/polkadot-archives/astar:/archive
     restart: unless-stopped
@@ -46,7 +46,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   clover:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/polkadot-archives/clover:/archive
     restart: unless-stopped
@@ -57,7 +57,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   moonbeam:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/polkadot-archives/moonbeam:/archive
     restart: unless-stopped
@@ -68,7 +68,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   parallel:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/polkadot-archives/parallel:/archive
     restart: unless-stopped
@@ -79,7 +79,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   kusama:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/kusama:/archive
     restart: unless-stopped
@@ -90,7 +90,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   statemine:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/statemine:/archive
     restart: unless-stopped
@@ -101,7 +101,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   karura:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/karura:/archive
     restart: unless-stopped
@@ -112,7 +112,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   bifrost:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/bifrost:/archive
     restart: unless-stopped
@@ -123,7 +123,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   khala:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/khala:/archive
     restart: unless-stopped
@@ -134,7 +134,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   shiden:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/shiden:/archive
     restart: unless-stopped
@@ -145,7 +145,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   moonriver:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/moonriver:/archive
     restart: unless-stopped
@@ -156,7 +156,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   calamari:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/calamari:/archive
     restart: unless-stopped
@@ -167,7 +167,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   kilt-spiritnet:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/kilt-spiritnet:/archive
     restart: unless-stopped
@@ -178,7 +178,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   basilisk:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/basilisk:/archive
     restart: unless-stopped
@@ -189,7 +189,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   altair:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/altair:/archive
     restart: unless-stopped
@@ -200,7 +200,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   parallel-heiko:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/parallel-heiko:/archive
     restart: unless-stopped
@@ -211,7 +211,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   kintsugi-btc:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/kintsugi-btc:/archive
     restart: unless-stopped
@@ -222,7 +222,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   bit.country-pioneer:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/bit.country-pioneer:/archive
     restart: unless-stopped
@@ -233,7 +233,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   genshiro:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/genshiro:/archive
     restart: unless-stopped
@@ -244,7 +244,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   unique-quartz:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/unique-quartz:/archive
     restart: unless-stopped
@@ -255,7 +255,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   picasso:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/picasso:/archive
     restart: unless-stopped
@@ -266,7 +266,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   encointer:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/encointer:/archive
     restart: unless-stopped
@@ -277,7 +277,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   crust-shadow:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/crust-shadow:/archive
     restart: unless-stopped
@@ -288,7 +288,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   robonomics:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/robonomics:/archive
     restart: unless-stopped
@@ -299,7 +299,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   zeitgeist:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/zeitgeist:/archive
     restart: unless-stopped
@@ -310,7 +310,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   subsocial:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/subsocial:/archive
     restart: unless-stopped
@@ -321,7 +321,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   sakura:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/sakura:/archive
     restart: unless-stopped
@@ -332,7 +332,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   integritee:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/integritee:/archive
     restart: unless-stopped
@@ -343,7 +343,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   crab:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/crab:/archive
     restart: unless-stopped
@@ -354,7 +354,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   litmus:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/litmus:/archive
     restart: unless-stopped
@@ -365,7 +365,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   kico:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/kico:/archive
     restart: unless-stopped
@@ -376,7 +376,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   centrifuge:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/polkadot-archives/centrifuge:/archive
     restart: unless-stopped
@@ -385,9 +385,9 @@ services:
       SOURCE_CHAIN_RPC: wss://fullnode.parachain.centrifuge.io
       TARGET_DIR: /archive
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
-  
+
   efinity:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/polkadot-archives/efinity:/archive
     restart: unless-stopped
@@ -398,7 +398,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   hydra:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/polkadot-archives/hydra:/archive
     restart: unless-stopped
@@ -409,7 +409,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   interlay:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/polkadot-archives/interlay:/archive
     restart: unless-stopped
@@ -420,7 +420,7 @@ services:
     entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   composable:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/polkadot-archives/composable:/archive
     restart: unless-stopped
@@ -428,10 +428,10 @@ services:
       DEBUG: 1
       SOURCE_CHAIN_RPC: wss://rpc.composable.finance
       TARGET_DIR: /archive
-    entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"] 
+    entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   nodle:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/polkadot-archives/nodle:/archive
     restart: unless-stopped
@@ -439,10 +439,10 @@ services:
       DEBUG: 1
       SOURCE_CHAIN_RPC: wss://nodle-parachain.api.onfinality.io/ws?apikey=${ONFINALITY_API_KEY}
       TARGET_DIR: /archive
-    entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"] 
+    entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   equilibrium:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/polkadot-archives/equilibrium:/archive
     restart: unless-stopped
@@ -450,10 +450,10 @@ services:
       DEBUG: 1
       SOURCE_CHAIN_RPC: wss://node.pol.equilibrium.io/
       TARGET_DIR: /archive
-    entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"] 
+    entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   phala:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/polkadot-archives/phala:/archive
     restart: unless-stopped
@@ -461,10 +461,10 @@ services:
       DEBUG: 1
       SOURCE_CHAIN_RPC: wss://api.phala.network/ws
       TARGET_DIR: /archive
-    entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"] 
+    entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   sora:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/sora:/archive
     restart: unless-stopped
@@ -472,10 +472,10 @@ services:
       DEBUG: 1
       SOURCE_CHAIN_RPC: wss://ws.parachain-collator-1.c1.sora2.soramitsu.co.jp
       TARGET_DIR: /archive
-    entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"] 
+    entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   turing:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/turing:/archive
     restart: unless-stopped
@@ -483,10 +483,10 @@ services:
       DEBUG: 1
       SOURCE_CHAIN_RPC: wss://turing.api.onfinality.io/ws?apikey=${ONFINALITY_API_KEY}
       TARGET_DIR: /archive
-    entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"] 
+    entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   mangata:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/mangata:/archive
     restart: unless-stopped
@@ -494,10 +494,10 @@ services:
       DEBUG: 1
       SOURCE_CHAIN_RPC: wss://mangata-x.api.onfinality.io/ws?apikey=${ONFINALITY_API_KEY}
       TARGET_DIR: /archive
-    entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"] 
+    entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]
 
   mangata:
-    image: ghcr.io/subspace/relayer:latest
+    image: ghcr.io/autonomys/relayer:latest
     volumes:
       - /mnt/polkadot_archive_volume/kusama-archives/mangata:/archive
     restart: unless-stopped
@@ -505,4 +505,4 @@ services:
       DEBUG: 1
       SOURCE_CHAIN_RPC: wss://mangata-x.api.onfinality.io/ws?apikey={ONFINALITY_API_KEY}
       TARGET_DIR: /archive
-    entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"] 
+    entrypoint: ["node", "/dist/tools/continuous-fetch-blocks-to-archive.js"]

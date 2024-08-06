@@ -67,7 +67,7 @@ module "squids" {
   archive-node-config = {
     network-name       = "${var.network_name}"
     domain-prefix      = "archive"
-    node-org           = "subspace"
+    node-org           = "autonomys"
     node-tag           = var.node_tag
     docker-tag         = "latest"
     instance-type      = var.instance_type
@@ -82,7 +82,7 @@ module "squids" {
   nova-archive-node-config = {
     network-name       = "${var.network_name}"
     domain-prefix      = "nova.archive"
-    node-org           = "subspace"
+    node-org           = "autonomys"
     node-tag           = var.node_tag
     docker-tag         = "evm-domain"
     instance-type      = var.instance_type

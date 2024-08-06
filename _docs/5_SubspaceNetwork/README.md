@@ -58,10 +58,10 @@ ln -s /snap/bin/certbot /usr/bin/certbot
 
 Following [certbot instructions](https://certbot.eff.org/lets-encrypt/ubuntufocal-nginx). We need a **subdomain (RPC_PUBLIC_NAME)** mapped to the Droplet **IP_ADDRESS** and a running **nginx** with an **open port 80**.
 
-Environments use a `blue-green` strategy. Creating a new node or environment for public use requires to issue certificates for the <CNAME_record> and <new_subdomain>. Certbot will ask for a domain list to validate. 
+Environments use a `blue-green` strategy. Creating a new node or environment for public use requires to issue certificates for the <CNAME_record> and <new_subdomain>. Certbot will ask for a domain list to validate.
 
 For example: (`<new_subdomain>, <CNAME_record>`)
-* Public Testnet: `aries-test-rpc-a.subspace.network, test-rpc.subspace.network` - 
+* Public Testnet: `aries-test-rpc-a.subspace.network, test-rpc.subspace.network` -
 * Public Farmnet: `aries-farm-rpc-a.subspace.network, farm-rpc.subspace.network`
 
 Notes:
@@ -139,7 +139,7 @@ server {
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection "upgrade";
   }
-  
+
   location / {
     try_files $uri $uri/ =404;
 
@@ -184,13 +184,13 @@ touch docker-compose.yml
 ```
 
 Sample [docker-compose.yml](node-docker-compose.yml) can be used as a reference with following tweaks required:
-* `DATE` needs to be replaced with the last snapshot date from [ghcr.io](https://github.com/orgs/subspace/packages?repo_name=subspace). 
+* `DATE` needs to be replaced with the last snapshot date from [ghcr.io](https://github.com/orgs/autonomys/packages?repo_name=subspace).
 * `/path/to/*` in all cases needs to be replaced with real paths owned by `nobody:nogroup`
 * `GENERATED_BOOTSTRAP_NODE_ID_HERE` and `GENERATED_NODE_KEY_HERE` should be replaced with actual values.
   First time can be generated with following command (please retain values across testnets that are supposed to be
   identical):
   ```bash
-  docker run --rm -it ghcr.io/subspace/node:snapshot-DATE key generate-node-key
+  docker run --rm -it ghcr.io/autonomys/node:snapshot-DATE key generate-node-key
   ```
 
 Now pull fresh images and spin up the network:
@@ -240,25 +240,25 @@ touch config/config.json
 Sample [docker-compose.yml](relayer-docker-compose.yml) can be used as a reference with following tweaks required:
 * `/path/to/archives` should point to directory where downloaded archives are stored (if there are any)
 * `/path/to/config` should point to directory that contains `config.json` as described in
-  [relayer's readme](https://github.com/subspace/subspace-relayer/blob/main/backend/README.md) and make sure to account
+  [relayer's readme](https://github.com/autonomys/subspace-relayer/blob/main/backend/README.md) and make sure to account
   for directory with archives to be mounted to `/archives` inside of the container and use public RPC endpoint for
   target chain
 
 Now fund accounts and create necessary feeds on the network (only needs to be done once after network restart):
 ```bash
-docker pull ghcr.io/subspace/relayer:latest
+docker pull ghcr.io/autonomys/relayer:latest
 # Fund accounts from config using account whose seed is specified in `FUNDS_ACCOUNT_SEED`
 docker run --rm -it \
     -e CHAIN_CONFIG_PATH="/config.json" \
     -e FUNDS_ACCOUNT_SEED="" \
     --volume /path/to/config/config.json:/config.json:ro \
-    ghcr.io/subspace/relayer:latest \
+    ghcr.io/autonomys/relayer:latest \
     fund-accounts
 # Create feeds (in case created feed is different from one in the config you might have to update the config)
 docker run --rm -it \
     -e CHAIN_CONFIG_PATH="/config.json" \
     --volume /path/to/config/config.json:/config.json:ro \
-    ghcr.io/subspace/relayer:latest \
+    ghcr.io/autonomys/relayer:latest \
     create-feeds
 ```
 

@@ -56,7 +56,7 @@ resource "null_resource" "setup-nodes" {
   provisioner "remote-exec" {
     inline = [
       "cd /home/${var.ssh_user}/subspace/",
-      "git clone https://github.com/subspace/subspace.git",
+      "git clone https://github.com/autonomys/subspace.git",
       "cd subspace",
       "git checkout ${var.branch_name}"
     ]

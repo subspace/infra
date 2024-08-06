@@ -50,7 +50,7 @@ resource "null_resource" "clone_branch" {
   provisioner "remote-exec" {
     inline = [
       "cd /root/subspace/",
-      "git clone https://github.com/subspace/subspace.git",
+      "git clone https://github.com/autonomys/subspace.git",
       "cd subspace",
       "git checkout ${var.branch_name}"
     ]

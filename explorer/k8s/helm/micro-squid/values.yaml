@@ -8,13 +8,13 @@ administrator:
 namespace: squid
 
 image:
-  repository: ghcr.io/subspace/blockexplorer-processor
+  repository: ghcr.io/autonomys/blockexplorer-processor
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 
 image_api:
-  repository: ghcr.io/subspace/blockexplorer-api-server
+  repository: ghcr.io/autonomys/blockexplorer-api-server
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"

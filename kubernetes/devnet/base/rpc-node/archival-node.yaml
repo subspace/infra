@@ -44,7 +44,7 @@ spec:
         effect: "NoSchedule"
       containers:
       - name: rpc-node
-        image: ghcr.io/subspace/node:${DOCKER_TAG}
+        image: ghcr.io/autonomys/node:${DOCKER_TAG}
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true

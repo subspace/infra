@@ -41,7 +41,7 @@ module "gemini-3h" {
     deployment-version = 0
     regions            = var.aws_region
     instance-count     = var.instance_count["rpc-squid"]
-    docker-org         = "subspace"
+    docker-org         = "autonomys"
     docker-tag         = "gemini-3h-2024-jul-16"
     domain-prefix      = "rpc-squid"
     reserved-only      = false
@@ -56,7 +56,7 @@ module "gemini-3h" {
     deployment-version = 0
     regions            = var.aws_region
     instance-count     = var.instance_count["nova-squid"]
-    docker-org         = "subspace"
+    docker-org         = "autonomys"
     docker-tag         = "gemini-3h-2024-jul-16"
     domain-prefix      = "nova-squid"
     reserved-only      = false

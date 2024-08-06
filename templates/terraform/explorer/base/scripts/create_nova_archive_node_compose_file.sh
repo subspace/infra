@@ -31,7 +31,7 @@ services:
     depends_on:
       - db
     restart: on-failure
-    image: ghcr.io/subspace/substrate-ingest:\${DOCKER_TAG}
+    image: ghcr.io/autonomys/substrate-ingest:\${DOCKER_TAG}
     logging:
       driver: loki
       options:
@@ -97,7 +97,7 @@ services:
     restart: unless-stopped
 
   pg-health-check:
-    image: ghcr.io/subspace/health-check:latest
+    image: ghcr.io/autonomys/health-check:latest
     environment:
       POSTGRES_HOST: \${POSTGRES_HOST}
       POSTGRES_PORT: \${POSTGRES_PORT}
@@ -108,7 +108,7 @@ services:
       - 8080:8080
 
   prom-health-check:
-    image: ghcr.io/subspace/health-check:latest
+    image: ghcr.io/autonomys/health-check:latest
     environment:
       PROMETHEUS_HOST: \${INGEST_HEALTH_HOST}
       PORT: \${INGEST_HEALTH_PORT}

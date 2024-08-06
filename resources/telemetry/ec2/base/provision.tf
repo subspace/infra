@@ -55,7 +55,7 @@ resource "null_resource" "start-telemetry-server" {
       "sudo systemctl daemon-reload",
       # start docker daemon
       "sudo systemctl enable --now docker.service",
-      "https://github.com/subspace/substrate-telemetry.git",
+      "https://github.com/autonomys/substrate-telemetry.git",
       "sudo docker compose -f /home/${var.ssh_user}/substrate-telemetry/docker-compose.yml up -d",
       "echo 'Installation Complete'",
     ]
