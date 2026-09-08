@@ -25,8 +25,8 @@ module "mainnet_reward_distributor" {
     instance_type       = "t3.medium"
     rpc_url             = "wss://auto-evm.mainnet.autonomys.xyz/ws"
     interval_seconds    = 120
-    tip_ai3             = 28.5
-    daily_ai3_cap       = 22000
+    tip_ai3             = 18
+    daily_ai3_cap       = 13500
     max_retries         = 5
     mortality_blocks    = 64
     confirmation_blocks = 5
